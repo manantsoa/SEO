@@ -6,6 +6,8 @@ require 'active_record'
 require 'nokogiri'
 # Connexion au site
 require 'open-uri'
+require 'addressable/uri'
+require 'anemone'
 
 #ActiveRecord::Base.establish_connection(
 #  :adapter => "sqlite",
@@ -29,54 +31,29 @@ end
 class Page < ActiveRecord::Base
 end
 
-root  = "www.assurance-cyclo-scooter.com"
-nextUrls = ["http://www." + root]
-doneUrls = []
-errors = [
-	:hrefMissing => 0,
-	:URIParse    => 0
-]
-while nextUrls.count > 0 do
-	begin
-		url = URI.parse(nextUrls.pop)
-	rescue
-		errors[:URIParse] += 1
-		puts "Error while parsing url"
-		next
-	end
-	doneUrls.push(url)
-	puts "Crawling page " + url.path
-	begin
-		file = open(url.to_s)
-		page = Nokogiri::HTML(file)
-		links = page.css("a")
-		urlsLinks = []
-		links.each do |l|
-			if not l or not l['href']
-				errors[:hrefMissing] += 1
-				next
-			end
-			if l['href'][0..1] == "./"
-				puts 'lolilol'
-				urlsLinks.append(URI.parse("http://www." + root + l['href'][1..-1]))
-			else
-				urlsLinks.append(URI.parse(l['href']))
-			end
-		end
-	rescue Exception=>e
-		puts "Could not crawl " + url.path + " : " + e.to_s
-	ensure
-		file.close unless file.nil?
-	end
-	puts "Found " + links.length.to_s + " links ( " + (links.length - (urlsLinks & doneUrls).length).to_s + " new(s) )"
-	(urlsLinks).each do |l|
-		puts l.host + " versus " + root
-		if l.host != root
-			puts "external link : " + l.to_s
-			next
-		end
-		nextUrls.append(l) unless doneUrls.include?(l)
-	end
-	urlsLinks = []
-puts "End loop, arrays : " + nextUrls.to_s + "\n\n" + doneUrls.to_s
+class Hx < ActiveRecord::Base
 end
+
+unless ARGV[0].nil? 
+	Anemone.crawl("http://assurance-cyclo-scooter.com/", :threads => 12, :verbose => true, :obey_robots_txt => true) do |anemone|
+  		anemone.on_every_page do |page|
+  			if page.html?
+   		 		#Nokogiri::HTML(page.doc) rescue puts "HTML Translation error"
+   		 		# Balises Hx
+   		 		hx = []
+   		 		(1..6).each do |x|
+   		 			s = "h" + x.to_s
+   		 			page.doc.css(s).each do |h|
+   		 			 	hx.append({x:x, idx:page.doc.to_s.index(h), content:h.content})
+   		 			end
+   		 		end
+       	  		hx.sort_by { |h| h[:idx]} rescue "Hello"
+       	  		(1..hx.count).each do |idx|
+    	  			puts "<h"+hx[idx - 1][:x].to_s+">" + hx[idx - 1][:content] + "</h"+hx[idx - 1][:x].to_s+">"
+       	  		end
+       	  	end
+  		end
+	end
+	exit(0)
+end
+exit(1)
