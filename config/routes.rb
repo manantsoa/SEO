@@ -7,8 +7,11 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
-match '/crawler', :to => 'pages#configCrawler', via:[:get]
+root 'pages#index'
 
+match '/crawler', :to => 'pages#configCrawler', via:[:get]
+match '/hx'     , :to => 'pages#hxReport'     , via:[:get]
+match '/index'  , :to => 'pages#index'        , via:[:get]
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

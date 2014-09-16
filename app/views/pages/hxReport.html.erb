@@ -1,0 +1,8 @@
+<h1>Rapport de balisage</h1>
+
+<%= form_for :site do |s| %>
+	<b> Ajouter un site : </b><br />
+	Nom du site : <%= s.text_field :name %><br />
+	URL du site : <%= s.text_field :url %><br />
+	<%= s.submit %>
+<% end %>
