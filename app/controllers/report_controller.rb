@@ -30,4 +30,7 @@ class ReportController < ApplicationController
 		end
 		parseHx()
 	end
+	def index
+		@sites = Site.all
+	end
 end
