@@ -1,0 +1,29 @@
+<h1> Rapport du site <%= @site.name %> </h1> <br /><br />
+
+Adresse URL     : <%= @site.url %> <br />
+Nombre de pages : <%= @site.pages.count %> <br />
+
+
+Compte rendu synthétique : <br />
+Erreurs de balises < hx > : <br />
+<font color=<% if @hxErr[:curr].count == 0 %> "green" <% else %> "red" <% end %> <%= @hxErr[:curr].count %> 
+<% if @hxErr[:curr].count == 0 %>
+	Aucune erreur<br />
+<%else%>
+	<%= @hxErr[:curr].count %> erreurs<br />
+	<% (0..@hxErr[:curr].count - 1).each do |e| %>
+		<ul> Erreur sur la balise n°<%= @hxErr[:curr][e][:pos].to_s %> sur <%= @hxErr[:file][e] %> </ul><br />
+	<% end %> 
+<% end %>
+</font>
+
+
+Compte rendu détaillé : <br />
+
+<% @site.pages.each do |p| %>
+	Page    : <%= p.url %> <br />
+	Balises : <br />
+	<% p.hxes.each do |h| %>
+		<ul> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content %></ul>
+	<% end %>
+<% end %>

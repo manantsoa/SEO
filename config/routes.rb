@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  get 'pages/configCrawler'
-
+  resources :report
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -9,9 +8,13 @@ Rails.application.routes.draw do
 
 root 'pages#index'
 
-match '/crawler', :to => 'pages#configCrawler', via:[:get]
-match '/hx'     , :to => 'pages#hxReport'     , via:[:get]
-match '/index'  , :to => 'pages#index'        , via:[:get]
+match '/crawler',   :to => 'pages#configCrawler', via:[:get]
+match '/index'  ,   :to => 'pages#index'        , via:[:get]
+#match '/report/:id'
+ 
+
+
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
