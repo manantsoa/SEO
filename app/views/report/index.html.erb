@@ -1,5 +1,9 @@
 <h1> Sites </h1>
 
+<div id="index_link">
+<ul>
 <% @sites.each do |s| %>
-	<%= link_to s.url, report_path(s.id) %> <br/>
+	<li class="index_li_link"><%= link_to s.url, report_path(s.id) %></li>
 <% end %>
+</ul>
+</div>

@@ -5,8 +5,8 @@ Nombre de pages : <%= @site.pages.count %> <br />
 
 
 Compte rendu synthétique : <br />
-Erreurs de balises < hx > : <br />
-<font color=<% if @hxErr[:curr].count == 0 %> "green" <% else %> "red" <% end %> <%= @hxErr[:curr].count %> 
+Erreurs de balises < hx > :
+<font color=<% if @hxErr[:curr].count == 0 %> "green" <% else %> "red" <% end %>>
 <% if @hxErr[:curr].count == 0 %>
 	Aucune erreur<br />
 <%else%>

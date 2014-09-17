@@ -13,3 +13,27 @@
  *= require_tree .
  *= require_self
  */
+li{
+list-style-type: none;
+}
+
+h1{
+	color:green;
+	font-size:3.8em;
+	text-align: center;
+}
+
+#index_link a{
+	position:relative;
+	font-weight:bold;
+	font-size:1.2em;
+	margin-bottom:20px;
+	display:inline-block;
+	background:red;
+	height:100%;
+	text-align: center;
+}
+
+#index_link {
+	text-align: center;
+}
