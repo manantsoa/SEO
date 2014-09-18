@@ -11,12 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140916075004) do
+ActiveRecord::Schema.define(version: 20140918123229) do
+
+  create_table "html_errors", force: true do |t|
+    t.string   "str"
+    t.integer  "line"
+    t.integer  "page_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "hxes", force: true do |t|
     t.integer  "x"
     t.integer  "pos"
     t.string   "content"
+    t.integer  "page_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "imgs", force: true do |t|
+    t.string   "url"
+    t.string   "title"
+    t.string   "alt"
     t.integer  "page_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -33,6 +50,13 @@ ActiveRecord::Schema.define(version: 20140916075004) do
   create_table "sites", force: true do |t|
     t.string   "name"
     t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "titles", force: true do |t|
+    t.string   "content"
+    t.integer  "page_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

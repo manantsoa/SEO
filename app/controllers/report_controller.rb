@@ -1,7 +1,5 @@
 def parseHx()
-	@hxErr = {}
-	@hxErr[:curr] = []
-	@hxErr[:file]   = []
+	@err[:hx] = []
 	if @site.nil?
 		return nil
 	end
@@ -9,22 +7,32 @@ def parseHx()
 		if p.hxes.first.nil?
 			next
 		end
+#		orderBool = false;
 		prv = p.hxes.first.x
 		p.hxes.each do |h|
 			if (h.x - prv).abs > 1 
-				@hxErr[:file].append(p.url)
-				@hxErr[:curr].append(h)
+				@err[:hx].append({
+					:curr => h,
+					:file => p.url,
+					:type => ERR_HX_DIFF
+					})
 			end
+#			if (h.x > first) and not orderBool
+#				@err[:hx].append({
+#					:curr => h,
+#					:file => p.url,
+#					:type => ERR_HX_ORDER
+#					})
+#				orderBool = true
+#			end
 			prv = h.x
 		end
 	end
 end
 
-
-
-
 class ReportController < ApplicationController
 	def show
+		@err = {}
 		if (@site = Site.find(params[:id])) == nil
 			redirect_to root_path
 		end

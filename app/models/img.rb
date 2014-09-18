@@ -1,4 +1,4 @@
-class Hx < ActiveRecord::Base
+class Img < ActiveRecord::Base
 	belongs_to :page
 	has_one    :site, through: :page
 end
