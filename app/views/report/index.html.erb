@@ -3,7 +3,7 @@
 <div id="index_link">
 <ul>
 <% @sites.each do |s| %>
-	<li class="index_li_link"><%= link_to s.url, report_path(s.id) %></li>
+	<li class="index_li_link"><%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %></li>
 <% end %>
 </ul>
 </div>

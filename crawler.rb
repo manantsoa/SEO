@@ -67,14 +67,14 @@ end
     if !site || !site.url
       return
     end
-    replies = []
+  # replies = []
     Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
   		anemone.on_every_page do |page|
-   		  if replies[page.code] == nil
-          replies[page.code] = 0
-        end
-        replies[page.code] += 1
-        if page.html? && page.code == 200
+#   		  if replies[page.code] == nil
+ #         replies[page.code] = 0
+   #     end
+  #      replies[page.code] += 1
+        if page.html? && page.code.to_i == 200
   		  	if (p = site.pages.find_by(url:page.url.to_s)) == nil
   			 	  p = site.pages.create
   				  p.url = page.url.to_s
@@ -123,11 +123,11 @@ end
   	end
 	  site.save
     puts "Done. pages replies : "
-    if replies[200] == 0
-      site.destroy
-    end
-    rpcode = 0
-    (100..520).each {|r| puts ("Code [" + r.to_s + "] : " + replies[r].to_s) unless replies[r].nil?}
+   # if replies[200] == 0
+    #  site.destroy
+    #end
+    #rpcode = 0
+  #  (100..520).each {|r| puts ("Code [" + r.to_s + "] : " + replies[r].to_s) unless replies[r].nil?}
   end
 #}
 exit(0)
