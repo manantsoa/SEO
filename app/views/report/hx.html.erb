@@ -1,0 +1,9 @@
+<h1> Outil d'analyse des balises hx </h1>
+
+
+<center>
+	<select name="page">
+	<% @site.pages.each do |p| %>
+	  <option <% if [p.id] & @hxFiles != nil.to_a %> style="color:red;" <% end %> value=<%= p.url%>><%= p.url.split('/').last.to_s %></option>
+	<%end%>
+	</select>

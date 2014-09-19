@@ -1,6 +1,5 @@
 def parseHx()
 	@err[:hx] = []
-	@err[:html] = []
 	if @site.nil?
 		return nil
 	end
@@ -11,10 +10,10 @@ def parseHx()
 #		orderBool = false;
 		prv = p.hxes.first.x
 		p.hxes.each do |h|
-			if h.x.nil? || prv.nil? || (h.x - prv).abs > 1 
+			if (h.x - prv).abs > 1 
 				@err[:hx].append({
 					:curr => h,
-					:file => p.url,
+					:file => p,
 					:type => ERR_HX_DIFF
 					})
 			end
@@ -32,12 +31,22 @@ def parseHx()
 end
 
 class ReportController < ApplicationController
-	def show
+	before_filter :load
+
+	def load
 		@err = {}
 		if (@site = Site.find(params[:id])) == nil
 			redirect_to root_path
 		end
+	end
+	def show
+	end
+	def hx
 		parseHx()
+		@hxFiles = []
+		@err[:hx].each {|h| @hxFiles << h.file.id}
+	end
+	def img
 	end
 	def index
 		@sites = Site.all

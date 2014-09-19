@@ -62,8 +62,8 @@ puts Benchmark.measure {
   mArgv.each do |url|
     if (site = Site.find_by(url:url)) == nil
 	 	  site = Site.create
-		  site.url = url
 	  end
+    site.url = url
     if !site || !site.url
       return
     end
