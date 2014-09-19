@@ -1,11 +1,12 @@
+require 'open-uri'
+
 class PagesController < ApplicationController
   def configCrawler
-	def new
-		@url = Site.new
-  	end
   end
   def submitCrawl
-  	Site.create(name:params[:name], url:params[:url])
+    url = URI.parse(params[:site][:url])
+  	Site.create(name:params[:site][:name], url:url.to_s)
+    system("ruby crawler.rb \"" + url.to_s + "\" & ")
   	redirect_to root_path
   end
   def hxReport

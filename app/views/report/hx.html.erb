@@ -2,8 +2,9 @@
 
 
 <center>
+	
 	<select name="page">
 	<% @site.pages.each do |p| %>
-	  <option <% if [p.id] & @hxFiles != nil.to_a %> style="color:red;" <% end %> value=<%= p.url%>><%= p.url.split('/').last.to_s %></option>
+	  <option <% if [p.id] & @hxFiles != nil.to_a %> style="background:red;" <% end %> value=<%= p.url%>><%= p.url.split('/').last.to_s %></option>
 	<%end%>
 	</select>

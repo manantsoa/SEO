@@ -34,19 +34,28 @@ class ReportController < ApplicationController
 	before_filter :load
 
 	def load
+
+	end
+	def show
 		@err = {}
 		if (@site = Site.find(params[:id])) == nil
 			redirect_to root_path
 		end
+		parseHx()
 	end
-	def show
-	end
-	def hx
+	def hx		
+		@err = {}
+		if (@site = Site.find(params[:id])) == nil
+			redirect_to root_path
+		end
 		parseHx()
 		@hxFiles = []
-		@err[:hx].each {|h| @hxFiles << h.file.id}
+		@err[:hx].each {|h| @hxFiles << h[:file].id}
 	end
 	def img
+	end
+	def test
+		# Juste parce qu'on aime coder moche <3
 	end
 	def index
 		@sites = Site.all

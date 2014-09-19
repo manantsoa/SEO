@@ -12,11 +12,12 @@ Erreurs de balises < hx > :
 <%else%>
 	<%= @err[:hx].count %> erreurs<br />
 	<% (0..@err[:hx].count - 1).each do |e| %>
-		<ul> Erreur sur la balise ligne <%= @err[:hx][e][:curr][:pos].to_s %> sur <%= @err[:hx][e][:file] %> </ul>
+		<ul> Erreur sur la balise ligne <%= @err[:hx][e][:curr][:pos].to_s %> sur <%= @err[:hx][e][:file].url.to_s %> </ul>
 	<% end %> 
 <% end %>
 </font>
 Compte rendu détaillé : <br />
+
 
 <% @site.pages.each do |p| %>
 	Page         : <%= p.url %> <br />

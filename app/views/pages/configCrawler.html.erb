@@ -3,5 +3,6 @@
 <p>URL : </p>
 <%= form_for(Site.new) do |f| %>
     <%= f.text_field :name %>
+    <%= f.text_field :url  %>
     <%= f.submit "Valider" %>
 <% end %>

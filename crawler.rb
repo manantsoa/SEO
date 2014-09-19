@@ -58,7 +58,7 @@ mArgv = ARGV
 if mArgv[0].nil?
   Site.all.each { |s| mArgv.append(s.url)}
 end
-puts Benchmark.measure {
+#puts Benchmark.measure {
   mArgv.each do |url|
     if (site = Site.find_by(url:url)) == nil
 	 	  site = Site.create
@@ -87,8 +87,8 @@ puts Benchmark.measure {
           end
 #  		            p.rawContent = page.body
   		    p.site_id = site.id
-          Benchmark.bm() do |measure|
-            measure.report("<hx>    ") {
+ #         Benchmark.bm() do |measure|
+  #          measure.report("<hx>    ") {
       		    p.hxes.delete_all
  	    	 		  hx = []
    		    	  (1..6).each do |x|
@@ -103,20 +103,20 @@ puts Benchmark.measure {
                                  content:(hx[idx].text != nil.to_s ? hx[idx].text : "Erreur HTML sur la balise"),
                                  page_id:p.id)
  					    end
-            }
-            measure.report("<title>") {
+#            }
+ #           measure.report("<title>") {
               p.titles.delete_all
               doc.css("title").each do |t|
                 p.titles.create(content:t.content, page_id:p.id)
               end
-            }
-            measure.report("<img>   ") {
+  #          }
+   #         measure.report("<img>   ") {
               p.imgs.delete_all
               doc.css("img").each do |i|
                 p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
               end
-            }
-          end
+    #        }
+     #     end
  	  		  p.save
  	  	  end
  		  end
@@ -129,5 +129,5 @@ puts Benchmark.measure {
     rpcode = 0
     (100..520).each {|r| puts ("Code [" + r.to_s + "] : " + replies[r].to_s) unless replies[r].nil?}
   end
-}
+#}
 exit(0)
