@@ -15,16 +15,16 @@ Erreurs de balises < hx > :
 	<% end %> 
 <% end %>
 </font>
-<font color=<% if 
 
 Compte rendu détaillé : <br />
 
 <% @site.pages.each do |p| %>
-	Page    : <%= p.url %> <br />
-	Erreurs : 
-	<%  p.html_errors.each do |e|
+	Page         : <%= p.url %> <br />
+	Erreurs HTML : <font color=<% if !p.html_errors.count %> "green" <% else %> "red" <% end%>> <%= p.html_errors.count %>
+	<%  p.html_errors.each do |e| %>
 	<li>	<%= e.str %>  ligne <%= e.line %></li>
 	<% end %>
+	</font>
 	Balises : <br />
 	<% p.hxes.each do |h| %>
 		<ul> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content %></ul>
