@@ -7,8 +7,8 @@ Rails.application.routes.draw do
   # root 'welcome#index'
 
 root 'pages#index'
-
 match '/crawler',   :to => 'pages#configCrawler', via:[:get]
+match '/crawler',   :to => 'pages#submitCrawl', :as => :sites, via:[:post]
 match '/index'  ,   :to => 'pages#index'        , via:[:get]
 #match '/report/:id'
  

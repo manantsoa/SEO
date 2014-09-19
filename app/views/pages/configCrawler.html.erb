@@ -1,5 +1,7 @@
 <h1>Configuration du crawler</h1>
-<h3>HéHo</h3>
-<h6>HAHAH</h6>
-<h1>Bouh</h1>
-<p> En construction :-) </p>
+
+<p>URL : </p>
+<%= form_for(Site.new) do |f| %>
+    <%= f.text_field :name %>
+    <%= f.submit "Valider" %>
+<% end %>

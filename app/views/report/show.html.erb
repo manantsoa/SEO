@@ -17,7 +17,9 @@ Erreurs de balises < hx > :
 <% end %>
 </font>
 
+<%= collection_select :site, :url, @site.pages, :id, :url %>
 
+<br />
 Compte rendu détaillé : <br />
 
 <% @site.pages.each do |p| %>
