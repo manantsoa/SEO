@@ -81,6 +81,7 @@ puts Benchmark.measure {
   			  end
           doc = Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11)
 #          doc.errors.each {|e| puts e.to_s + e.line.to_s}
+          p.html_errors.delete_all
           doc.errors.each do |e|
             p.html_errors.create(str:e.to_s, line:e.line, page_id:p.id)
           end
@@ -91,18 +92,16 @@ puts Benchmark.measure {
       		    p.hxes.delete_all
  	    	 		  hx = []
    		    	  (1..6).each do |x|
-   		 	      	s = "h" + x.to_s
-   		 		      doc.css(s).each do |h|
-                  hx.append({x:x, idx:h.line, content:(h.text != nil.to_s ? h.text : "Erreur HTML sur la balise")})
-   		          end
+    		 		      hx += doc.css("h" + x.to_s)
+#                  hx.append({x:x, idx:h.line, content:(h.text != nil.to_s ? h.text : "Erreur HTML sur la balise")})
    		     	  end
-              hx = hx.sort_by {|a| a[:idx]}
- 	  		      cnt = 0
+              hx = hx.sort_by {|a| a[:line]}
               (0..hx.count - 1).each do |idx|
- 		  		      if p.hxes.create(x:hx[idx][:x], pos:idx + 1, content:hx[idx][:content], page_id:p.id) == false
- 						     puts "Impossible d'enregistrer hx dans la base de donnée"	
- 					      end
- 	  		      end
+ 		  		       p.hxes.create(x:hx[idx][:x],
+                                 pos:hx[idx].line,
+                                 content:(hx[idx].text != nil.to_s ? hx[idx].text : "Erreur HTML sur la balise"),
+                                 page_id:p.id)
+ 					    end
             }
             measure.report("<title>") {
               p.titles.delete_all

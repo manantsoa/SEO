@@ -1,5 +1,6 @@
 def parseHx()
 	@err[:hx] = []
+	@err[:html] = []
 	if @site.nil?
 		return nil
 	end
