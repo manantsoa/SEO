@@ -20,8 +20,9 @@ Compte rendu détaillé : <br />
 
 
 <% @site.pages.each do |p| %>
-	Page         : <%= p.url %> <br />
-	Images       : <%= p.imgs.count %> <br />
+	
+	<%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %><br />
+<!--	Images       : <%= p.imgs.count %> <br />
 	<% if p.imgs.where(alt:nil).count > 0 %> <font color="red"> 
 		<%= p.imgs.where(alt:nil).count %> n'ont pas d'attribut alt <br />
 		<% p.imgs.where(alt:nil).each do |i| %>
@@ -47,4 +48,5 @@ Compte rendu détaillé : <br />
 	<% p.hxes.each do |h| %>
 		<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content %></li>
 	<% end %>
+-->
 <% end %>

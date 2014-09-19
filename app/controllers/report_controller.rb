@@ -33,6 +33,27 @@ end
 class ReportController < ApplicationController
 	before_filter :load
 
+	def bypage
+		@err = {}
+		@err[:hx] = []
+		p = Site.find(params[:id]).pages.all.where(id:params[:pid]).first
+		@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
+		if p.hxes.first.nil?
+			return
+		end
+		@err[:hx].append("Pas d'erreurs de balises")
+#		orderBool = false;
+		prv = p.hxes.first.x
+		p.hxes.each do |h|
+			if (h.x - prv).abs > 1 
+				@err[:hx].append({
+					:curr => h,
+					:file => p,
+					:type => ERR_HX_DIFF
+					})
+			end
+		end
+	end
 	def load
 
 	end
@@ -56,6 +77,7 @@ class ReportController < ApplicationController
 	end
 	def test
 		# Juste parce qu'on aime coder moche <3
+		# Owi !!!
 	end
 	def index
 		@sites = Site.all

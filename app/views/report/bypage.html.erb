@@ -1,0 +1,40 @@
+<h1> <% @Page.first.url %> </h1>
+
+<% @err[:hx].each do |e| %>
+	<li><%= e %></li>
+<% end %>
+
+Compte rendu détaillé : <br />
+
+
+<% @Page.each do |p| %>
+	
+	Images       : <%= p.imgs.count %>
+	<% if p.imgs.where(alt:nil).count > 0 %> <font color="red"> 
+		<%= p.imgs.where(alt:nil).count %> n'ont pas d'attribut alt <br />
+		<% p.imgs.where(alt:nil).each do |i| %>
+		 <li> <%= i.url %> </li>
+		 <%end%>
+		 </font>
+	<%end %> 
+	<% if p.imgs.where(title:nil).count > 0 %> : <font color="red"> 
+		 <%= p.imgs.where(title:nil).count %> n'ont pas d'attribut title <br />
+		<% p.imgs.where(title:nil).each do |i| %>
+		<li> <%= i.url %> </li>
+		<%end%>
+		</font>
+	<%end %> 
+	<br/>
+	Erreurs HTML : <font color=<% if !p.html_errors.count %> "green" <% else %> "red" <% end%>> <%= p.html_errors.count %>
+	</center><br/>
+	<%  p.html_errors.each do |e| %>
+	<li>	<%= e.str %>  ligne <%= e.line %></li>
+	<% end %>
+	</font>
+	<div id ="bypage_balises">
+	Balises : <br />
+	<% p.hxes.each do |h| %>
+		<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content %></li>
+	<% end %>
+	</div>
+<% end %>

@@ -37,3 +37,12 @@ h1{
 #index_link {
 	text-align: center;
 }
+
+#bypage_balises{
+	padding: 10px;
+	left:50%;
+	position:absolute;
+	display:initial;
+	top: 100px;
+	border:solid 1px black;
+}
