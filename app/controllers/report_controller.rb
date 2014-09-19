@@ -11,7 +11,7 @@ def parseHx()
 #		orderBool = false;
 		prv = p.hxes.first.x
 		p.hxes.each do |h|
-			if (h.x - prv).abs > 1 
+			if h.x.nil? || prv.nil? || (h.x - prv).abs > 1 
 				@err[:hx].append({
 					:curr => h,
 					:file => p.url,

@@ -64,6 +64,9 @@ puts Benchmark.measure {
 	 	  site = Site.create
 		  site.url = url
 	  end
+    if !site || !site.url
+      return
+    end
     replies = []
     Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
   		anemone.on_every_page do |page|
