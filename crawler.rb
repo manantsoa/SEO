@@ -70,10 +70,7 @@ puts Benchmark.measure {
     replies = []
     Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
   		anemone.on_every_page do |page|
-        if page.url == site.url + "index.html"
-          next
-        end
-  		  if replies[page.code] == nil
+   		  if replies[page.code] == nil
           replies[page.code] = 0
         end
         replies[page.code] += 1
@@ -96,7 +93,7 @@ puts Benchmark.measure {
  	    	 		  hx = []
    		    	  (1..6).each do |x|
     		 		      hx += doc.css("h" + x.to_s)
-                  hx.each {|ħ| h[:x] = x unless !h[:x].nil?}
+                  hx.each {|h| h[:x] = x unless !h[:x].nil?}
 #                  hx.append({x:x, idx:h.line, content:(h.text != nil.to_s ? h.text : "Erreur HTML sur la balise")})
    		     	  end
               hx = hx.sort_by {|a| a[:line]}
