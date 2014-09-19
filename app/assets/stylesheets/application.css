@@ -29,9 +29,9 @@ h1{
 	font-size:1.2em;
 	margin-bottom:20px;
 	display:inline-block;
-	background:red;
 	height:100%;
 	text-align: center;
+	text-decoration: none;
 }
 
 #index_link {

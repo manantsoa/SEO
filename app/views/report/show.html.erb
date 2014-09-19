@@ -20,33 +20,5 @@ Compte rendu détaillé : <br />
 
 
 <% @site.pages.each do |p| %>
-	
 	<%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %><br />
-<!--	Images       : <%= p.imgs.count %> <br />
-	<% if p.imgs.where(alt:nil).count > 0 %> <font color="red"> 
-		<%= p.imgs.where(alt:nil).count %> n'ont pas d'attribut alt <br />
-		<% p.imgs.where(alt:nil).each do |i| %>
-		 <li> <%= i.url %> </li>
-		 <%end%>
-		 </font>
-	<%end %> 
-	<% if p.imgs.where(title:nil).count > 0 %> <font color="red"> 
-		<%= p.imgs.where(title:nil).count %> n'ont pas d'attribut title <br />
-		<% p.imgs.where(title:nil).each do |i| %>
-		<li> <%= i.url %> </li>
-		<%end%>
-		</font>
-	<%end %> 
-	<br/>
-	Erreurs HTML : <font color=<% if !p.html_errors.count %> "green" <% else %> "red" <% end%>> <%= p.html_errors.count %>
-	</center><br/>
-	<%  p.html_errors.each do |e| %>
-	<li>	<%= e.str %>  ligne <%= e.line %></li>
-	<% end %>
-	</font>
-	Balises : <br />
-	<% p.hxes.each do |h| %>
-		<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content %></li>
-	<% end %>
--->
 <% end %>
