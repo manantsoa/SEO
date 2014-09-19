@@ -96,6 +96,7 @@ puts Benchmark.measure {
  	    	 		  hx = []
    		    	  (1..6).each do |x|
     		 		      hx += doc.css("h" + x.to_s)
+                  hx.each {|ħ| h[:x] = x unless !h[:x].nil?}
 #                  hx.append({x:x, idx:h.line, content:(h.text != nil.to_s ? h.text : "Erreur HTML sur la balise")})
    		     	  end
               hx = hx.sort_by {|a| a[:line]}
