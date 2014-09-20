@@ -1,9 +1,17 @@
-<h1> Sites </h1>
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<li><%= link_to "Ajouter un site", crawler_path %></li>
+		<li><%= link_to "Index", root_path %></li>
+	</ul>
+</div>
+<% end %>
 
-<div id="index_link">
+<div id="report_index_link">
 <ul>
 <% @sites.each do |s| %>
-	<li class="index_li_link"><%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %></li>
+	<li class="index_li_link">Nom : <%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %> (<%= s.url %>)</li>
+		<span id="txt">Nombre de pages : <%= s.pages.count %></span>
 <% end %>
 </ul>
 </div>
