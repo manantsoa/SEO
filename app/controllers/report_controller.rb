@@ -80,6 +80,8 @@ class ReportController < ApplicationController
 		# Owi !!!
 	end
 	def index
+		@err = {}
 		@sites = Site.all
+		parseHx()
 	end
 end
