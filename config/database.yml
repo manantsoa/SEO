@@ -1,10 +1,10 @@
 development:
-  adapter: mysql
+  adapter: postgresql
   encoding: utf8
   reconnect: false
   database: db/development
   pool: 5
-  username: root
+  username: postgres
   password:
   host: localhost
 

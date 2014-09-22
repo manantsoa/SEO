@@ -1,6 +1,6 @@
 require 'rubygems'
 # Base de donnés 
-require 'mysql'
+require 'pg'
 require 'yaml'
 require 'active_record'
 # HTTP Parser 
