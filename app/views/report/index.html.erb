@@ -1,9 +1,28 @@
-<h1> Sites </h1>
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<li><%= link_to "Ajouter un site", crawler_path %></li>
+		<li><%= link_to "Index", root_path %></li>
+	</ul>
+</div>
+<% end %>
 
-<div id="index_link">
+<div id="report_index_link">
 <ul>
 <% @sites.each do |s| %>
-	<li class="index_li_link"><%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %></li>
+
+	<li class="index_li_link">Nom : <%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %> (<%= s.url %>)</li>
+		<span id="txt">Nombre de pages : <%= s.pages.count %></span><br/>
+		<span id="txt">Erreurs de balises < hx > :</span>
+		<font color=<% if @err[:hx].count == 0 %> "green" <% else %> "red" <% end %>>
+			<% if @err[:hx].count == 0 %>
+				Aucune erreur<br />
+			<%else%>
+				<%= @err[:hx].count %> erreurs<br />
+			<% end %>
+		</font>
+		<span id="txt">Nombre d'erreurs html : </span>
+		<%= s.pages.joins('INNER JOIN html_errors ON html_errors.page_id = pages.id').count %><br/>
 <% end %>
 </ul>
 </div>

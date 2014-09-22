@@ -1,8 +1,15 @@
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<li><%= link_to "Liste des rapports", "report" %></li>
+		<li><%= link_to "Index", root_path %></li>
+	</ul>
+</div>
+<% end %>
 <h1>Configuration du crawler</h1>
 
-<p>URL : </p>
 <%= form_for(Site.new) do |f| %>
-    <%= f.text_field :name %>
-    <%= f.text_field :url  %>
+    Nom : <%= f.text_field :name %>
+    Url :<%= f.text_field :url %>
     <%= f.submit "Valider" %>
 <% end %>
