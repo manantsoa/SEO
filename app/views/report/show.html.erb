@@ -1,3 +1,12 @@
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<li><%= link_to "Liste des rapports", "../report" %></li>
+		<li><%= link_to "Index", root_path %></li>
+		<li><%= link_to "Ajouter un site", crawler_path %></li>
+	</ul>
+</div>
+<% end %>
 <center><h1> Rapport du site <%= @site.name %> </h1> <br /><br />
 
 Adresse URL     : <%= @site.url %> <br />
@@ -19,5 +28,19 @@ Erreurs de balises < hx > :
 			<font color="red">Erreur sur la balise ligne <%= @err[:hx][e][:curr][:pos].to_s %></font>
 		<% end %>
 	<% end %>
-	<br/>
+	<% if p.imgs.where(title:nil).count > 0 %><font color="red">
+		<br/>
+	 	Images sans Title : <%= p.imgs.where(title:nil).count %>
+		</font>
+		<br/>
+	<%end %>
+	<% if p.imgs.where(alt:nil).count > 0 %><font color="red"> 
+	 	Images sans Alt : <%= p.imgs.where(alt:nil).count %>
+		</font>
+		<br/>
+	<%end %>
+	<% if p.html_errors.count > 0 %>
+		<font color="red"> Erreurs HTML : <%= p.html_errors.count %></font>
+		<br/>
+	<% end %>
 <% end %>

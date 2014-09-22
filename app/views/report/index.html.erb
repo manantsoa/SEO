@@ -10,7 +10,7 @@
 <div id="report_index_link">
 <ul>
 <% @sites.each do |s| %>
-
+	<div id="report_index_block">
 	<li class="index_li_link">Nom : <%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %> (<%= s.url %>)</li>
 		<span id="txt">Nombre de pages : <%= s.pages.count %></span><br/>
 		<span id="txt">Erreurs de balises < hx > :</span>
@@ -23,6 +23,7 @@
 		</font>
 		<span id="txt">Nombre d'erreurs html : </span>
 		<%= s.pages.joins('INNER JOIN html_errors ON html_errors.page_id = pages.id').count %><br/>
+	</div>
 <% end %>
 </ul>
 </div>

@@ -31,8 +31,13 @@ h1{
 }
 #report_index_link{
 	margin-top: 150px;
-	border: solid 1px black;
+}
 
+#report_index_block{
+	border: solid 1px black;
+	padding:20px;
+	margin-top: 10px;
+	width: 95%;
 }
 
 #report_index_link a{
