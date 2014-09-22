@@ -7,7 +7,7 @@ class PagesController < ApplicationController
     url = URI.parse(params[:site][:url])
   	Site.create(name:params[:site][:name], url:url.to_s)
     
-      exec("ruby crawler.rb \"" + url.to_s + "\"")
+    spawn("ruby crawler.rb \"" + url.to_s + "\"")
     
   	redirect_to root_path
   end

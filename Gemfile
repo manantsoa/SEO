@@ -51,3 +51,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
 gem 'nokogiri'
 gem 'anemone'
+gem 'yaml_db'
+gem 'mysql'

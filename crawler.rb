@@ -1,6 +1,7 @@
 require 'rubygems'
 # Base de donnés 
-require 'sqlite3'
+require 'mysql'
+require 'yaml'
 require 'active_record'
 # HTTP Parser 
 require 'nokogiri'
@@ -14,14 +15,15 @@ require 'benchmark'
 #)
 
 # Connexion en dur temporaire a l abase de donnés de dev
-
-ActiveRecord::Base.establish_connection(
-  :adapter  => "sqlite3",
-  :host     => "",
-  :username => "",
-  :password => "",
-  :database => "./db/development.sqlite3"
-)
+y = YAML.load_file('./config/database.yml')["development"]
+ActiveRecord::Base.establish_connection(y)
+ # :adapter  => "mysql",
+ # :encoding => "utf8"
+ # :host     => "localhost",
+ # :username => "root",
+ # :password => "",
+ # :database => "./db/development.sqlite"
+#)
 
 # Define your classes based on the database, as always
 class Site < ActiveRecord::Base
