@@ -29,13 +29,13 @@ Compte rendu détaillé : <br /><br />
 	</div>
 	Images       : <%= p.imgs.count %><br />
 	Images sans alt : 
-	<% if p.imgs.where(alt:nil).count > 0 %> <font color="red"> 
-		<%= p.imgs.where(alt:nil).count %>/<%= p.imgs.count %>
-		<% p.imgs.where(alt:nil).each do |i| %>
+	<% if p.imgs.where(alt:nil, alt: nil.to_s).count > 0 %> <font color="red"> 
+		<%= p.imgs.where(alt:nil, alt: nil.to_s).count %>/<%= p.imgs.count %>
+		<% p.imgs.where(alt:nil, alt: nil.to_s).each do |i| %>
 		 <li> <%= i.url %> </li>
 		 <%end%>
-		 </font>
-	<%end %> 
+	<% end %> 
+	 </font>
 	<br />
 	Images sans title
 	<% if p.imgs.where(title:nil).count > 0 %> : <font color="red"> 
@@ -44,7 +44,7 @@ Compte rendu détaillé : <br /><br />
 		<li> <%= i.url %> </li>
 		<%end%>
 		</font>
-	<%end %> 
+	<% end %> 
 	<br />
 	Erreurs HTML : <font color=<% if !p.html_errors.count %> "green" <% else %> "red" <% end%>> <%= p.html_errors.count %>
 	</center><br/>

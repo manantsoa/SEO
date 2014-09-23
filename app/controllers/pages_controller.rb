@@ -4,11 +4,10 @@ class PagesController < ApplicationController
   def configCrawler
   end
   def submitCrawl
+    flash.notice = "Post not successfully created"
     url = URI.parse(params[:site][:url])
   	Site.create(name:params[:site][:name], url:url.to_s)
-    
     spawn("ruby crawler.rb \"" + url.to_s + "\"")
-    
   	redirect_to root_path
   end
   def hxReport
