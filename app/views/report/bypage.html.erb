@@ -24,7 +24,7 @@ Compte rendu détaillé : <br /><br />
 	<div id ="bypage_balises">
 		Balises : <br />
 			<% p.hxes.each do |h| %>
-				<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content.force_encoding("UTF-8") %></li>
+				<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h h.content.force_encoding("UTF-8") %></li>
 			<% end %>
 	</div>
 	Images       : <%= p.imgs.count %><br />
@@ -54,3 +54,4 @@ Compte rendu détaillé : <br /><br />
 	</font>
 <% end %>
 </div>
+<% end %>

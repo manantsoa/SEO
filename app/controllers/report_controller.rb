@@ -7,8 +7,9 @@ def parseHx()
 		if p.hxes.first.nil?
 			next
 		end
-#		orderBool = false;
+		orderBool = false;
 		prv = p.hxes.first.x
+		max = prv
 		p.hxes.each do |h|
 			if (h.x - prv).abs > 1 
 				@err[:hx].append({
@@ -17,14 +18,14 @@ def parseHx()
 					:type => ERR_HX_DIFF
 					})
 			end
-#			if (h.x > first) and not orderBool
-#				@err[:hx].append({
-#					:curr => h,
-#					:file => p.url,
-#					:type => ERR_HX_ORDER
-#					})
-#				orderBool = true
-#			end
+			if (h.x < max) and !orderBool
+				@err[:hx].append({
+					:curr => h,
+					:file => p,
+					:type => ERR_HX_ORDER
+					})
+				orderBool = true
+			end
 			prv = h.x
 		end
 	end
