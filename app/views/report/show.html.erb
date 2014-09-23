@@ -1,9 +1,11 @@
 <% content_for :head do %>
 <div id="Menu-top">
 	<ul>
-		<li><%= link_to "Liste des rapports", "../report" %></li>
-		<li><%= link_to "Index", root_path %></li>
-		<li><%= link_to "Ajouter un site", crawler_path %></li>
+		<div id="Menu-top-li">
+			<li><%= link_to "Liste des rapports", "../report" %></li>
+			<li><%= link_to "Index", root_path %></li>
+			<li><%= link_to "Ajouter un site", crawler_path %></li>
+		</div>
 	</ul>
 </div>
 <% end %>

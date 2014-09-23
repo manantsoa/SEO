@@ -38,6 +38,7 @@ class ReportController < ApplicationController
 		@err[:hx] = []
 		p = Site.find(params[:id]).pages.all.where(id:params[:pid]).first
 		@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
+		@Site = Site.find(params[:id])
 		if p.hxes.first.nil?
 			return
 		end
@@ -83,5 +84,9 @@ class ReportController < ApplicationController
 		@err = {}
 		@sites = Site.all
 		parseHx()
+	end
+	def destroy
+		Site.find(params[:id]).destroy
+		redirect_to report_index_path
 	end
 end

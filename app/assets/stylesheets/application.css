@@ -48,13 +48,11 @@ h1{
 	text-decoration: none;
 }
 
-
 #bypage_balises{
 	padding: 10px;
 	left:50%;
 	position:absolute;
 	display:initial;
-	top: 100px;
 	border:solid 1px black;
 }
 
@@ -165,9 +163,7 @@ opacity:0.0;
 -webkit-animation-fill-mode:forwards;
 -moz-animation-timing-fonction:easa-in-out;
 -moz-animation-fill-mode:forwards;
-width:55%;
-margin-left:5%;
-padding-left:550px;
+width:100%%;
 height:100px;
 background:rgba(0, 0, 7, 0.8);
 position:relative;
@@ -210,4 +206,24 @@ color:white;
 }
 #txt{
 	margin-left: 20px;
+}
+#bypage_error{
+	width: 48%;
+}
+#Menu-top-li{
+	display:initial;
+	margin-left:35%;
+}
+#linkbypage{
+	margin-bottom: 30px;
+	margin-top: 30px;
+	display:block;
+	height: 50px;
+	position: relative;
+}
+#img_delete_report a{
+	background:url(bouton-supprimer-rouge-icone-4522-48.png) no-repeat;
+	width:50px;
+	height:50px;
+	background-size: 50% 50%;
 }

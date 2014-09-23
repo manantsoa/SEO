@@ -1,4 +1,16 @@
-<center><h2> <%= @Page.first.url %> </h2></center>
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<div id="Menu-top-li">
+			<li><%= link_to "Liste des rapports", ".." %></li>
+			<li><%= link_to "Index", root_path %></li>
+			<li><%= link_to "Ajouter un site", crawler_path %></li>
+			<li><%= link_to "Retour", "../" + @Site.id.to_s %></li>
+		</div>	
+	</ul>
+</div>
+<% end %>
+<center><h2> <a id= "linkbypage" href ="<%= @Page.first.url.to_s %>"><%= @Page.first.url.to_s %></a> </h2></center>
 <!--
 <% @err[:hx].each do |e| %>
 	<li><%= e %></li>
@@ -7,35 +19,38 @@
 
 Compte rendu détaillé : <br /><br />
 
-
+<div id="bypage_error">
 <% @Page.each do |p| %>
-	
-	Images       : <%= p.imgs.count %>
+	<div id ="bypage_balises">
+		Balises : <br />
+			<% p.hxes.each do |h| %>
+				<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content.force_encoding("UTF-8") %></li>
+			<% end %>
+	</div>
+	Images       : <%= p.imgs.count %><br />
+	Images sans alt : 
 	<% if p.imgs.where(alt:nil).count > 0 %> <font color="red"> 
-		<%= p.imgs.where(alt:nil).count %> n'ont pas d'attribut alt <br />
+		<%= p.imgs.where(alt:nil).count %>/<%= p.imgs.count %>
 		<% p.imgs.where(alt:nil).each do |i| %>
 		 <li> <%= i.url %> </li>
 		 <%end%>
 		 </font>
 	<%end %> 
+	<br />
+	Images sans title
 	<% if p.imgs.where(title:nil).count > 0 %> : <font color="red"> 
-		 <%= p.imgs.where(title:nil).count %> n'ont pas d'attribut title <br />
+		 <%= p.imgs.where(title:nil).count %>/<%= p.imgs.count %>
 		<% p.imgs.where(title:nil).each do |i| %>
 		<li> <%= i.url %> </li>
 		<%end%>
 		</font>
 	<%end %> 
-	<br/>
+	<br />
 	Erreurs HTML : <font color=<% if !p.html_errors.count %> "green" <% else %> "red" <% end%>> <%= p.html_errors.count %>
 	</center><br/>
 	<%  p.html_errors.each do |e| %>
 	<li>	<%= e.str %>  ligne <%= e.line %></li>
 	<% end %>
 	</font>
-	<div id ="bypage_balises">
-	Balises : <br />
-	<% p.hxes.each do |h| %>
-		<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content.force_encoding("UTF-8") %></li>
-	<% end %>
-	</div>
 <% end %>
+</div>
