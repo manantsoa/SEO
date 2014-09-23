@@ -4,4 +4,5 @@ class Page < ActiveRecord::Base
 	has_many  :titles      , :dependent => :destroy
 	has_many  :imgs        , :dependent => :destroy
 	has_many  :html_errors , :dependent => :destroy
+	has_many  :seoerrors   , :dependent => :destroy
 end
