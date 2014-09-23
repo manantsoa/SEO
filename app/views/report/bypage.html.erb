@@ -1,4 +1,4 @@
-<h1> <% @Page.first.url %> </h1>
+<center><h2> <%= @Page.first.url %> </h2></center>
 <!--
 <% @err[:hx].each do |e| %>
 	<li><%= e %></li>
@@ -35,7 +35,7 @@ Compte rendu détaillé : <br /><br />
 	<div id ="bypage_balises">
 	Balises : <br />
 	<% p.hxes.each do |h| %>
-		<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content %></li>
+		<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h.content.force_encoding("UTF-8") %></li>
 	<% end %>
 	</div>
 <% end %>
