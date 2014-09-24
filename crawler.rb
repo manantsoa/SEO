@@ -103,18 +103,20 @@ mArgv.each do |url|
     	 		hx += doc.css("h" + x.to_s)
            hx.each {|h| h[:x] = x.to_i if h[:x].nil?}
    	    end
-        hx = hx.sort_by {|a| a[:line]}
-        prv = hx[0][:x]
-        maxHx = prv
-        orderRem = 0
-        (0..hx.count - 1).each do |idx|
-          p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
-          unless (hx[idx][:x] >= maxHx || orderRem)
-            p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, page_id: p.id, site_id: p.site.id)  		 
-            orderRem = 1
+        if hx.count > 0
+          hx = hx.sort_by {|a| a[:line]}
+          prv = hx[0][:x]
+          maxHx = prv
+          orderRem = 0
+          (0..hx.count - 1).each do |idx|
+            p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
+            unless (hx[idx][:x] >= maxHx || orderRem)
+              p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, page_id: p.id, site_id: p.site.id)  		 
+              orderRem = 1
+            end
+            p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
+            prv = hx[idx][:x]
           end
-          p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
-          prv = hx[idx][:x]
         end
         # Title
         doc.css("title").each do |t|
