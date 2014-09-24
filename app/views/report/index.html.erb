@@ -23,11 +23,11 @@
 		<span id="txt">Crawler le : <%= s.created_at.to_s(:short) %></span><br/>
 		<span id="txt">Nombre de pages : <%= s.pages.count %></span><br/>
 		<span id="txt">Erreurs de balises < hx > :</span>
-		<font color=<% if @err[:hx].count == 0 %> "green" <% else %> "red" <% end %>>
-			<% if @err[:hx].count == 0 %>
+		<font color=<% if s.seoerrors.where(code: [1, 2, 3]).count == 0 %> "green" <% else %> "red" <% end %>>
+			<% if s.seoerrors.where(code: [1, 2, 3]).count == 0 %>
 				Aucune erreur<br />
 			<%else%>
-				<%= @err[:hx].count %> erreurs<br />
+				<%= s.seoerrors.where(code: [1, 2, 3]).count %> erreurs<br />
 			<% end %>
 		</font>
 		<span id="txt">Nombre d'erreurs html : </span>
