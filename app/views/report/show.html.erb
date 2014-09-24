@@ -15,21 +15,21 @@ Adresse URL     : <%= @site.url %> <br />
 Nombre de pages : <%= @site.pages.count %> <br />
 
 Erreurs de balises < hx > :
-<font color=<% if @err[:hx].count == 0 %> "green" <% else %> "red" <% end %>>
-<% if @err[:hx].count == 0 %>
+<font color=<% if @site.seoerrors.where(code: [1, 2, 3]).count == 0 %> "green" <% else %> "red" <% end %>>
+<% if @site.seoerrors.where(code: [1, 2, 3]).count == 0 %>
 	Aucune erreur<br />
 <%else%>
-	<%= @err[:hx].count %> erreurs<br />
+	<%= @site.seoerrors.where(code: [1, 2, 3]).count %> erreurs<br />
 <% end %>
 </font>
 <br/>
 <% @site.pages.each do |p| %>
 	<%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %>
-	<% (0..@err[:hx].count - 1).each do |e| %>
-		<% if @err[:hx][e][:file].url.to_s == p.url.to_s %>
-			<font color="red">Erreur sur la balise ligne <%= @err[:hx][e][:curr][:pos].to_s %></font>
-		<% end %>
-	<% end %>
+	<% if p.seoerrors.where(code: [1, 2, 3]).count > 0 %><font color="red">
+		<br/>
+	 	Erreurs balise hx : <%= p.seoerrors.where(code: [1, 2, 3]).count %>
+		</font>
+	<%end %>
 	<% if p.imgs.where(title:nil).count > 0 %><font color="red">
 		<br/>
 	 	Images sans Title : <%= p.imgs.where(title:nil).count %>
