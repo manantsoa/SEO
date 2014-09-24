@@ -10,14 +10,16 @@ require 'anemone'
 require 'benchmark'
 
 
-# Erreurs
+# Erreurs, mets les en dur et je rm ton code !
 
-HX_ORDER = 1                        # Erreur d'ordonancement
-HX_DUPLICATE = 2                    # Duplicatat de balise <hx> sut le site
-HX_DIFF = 3                         # </h1> <h3> 
-PARSER   = 4                        # Erreur de Nokogiri
-TITLE_DUPLICATE = 5
-IMG_NOALT       = 6
+HX_ORDER             = 1          # Erreur d'ordonancement
+HX_DUPLICATE         = 2          # Duplicatat de balise <hx> sut le site
+HX_DIFF              = 3          # </h1> <h3> 
+PARSER               = 4          # Erreur de Nokogiri
+TITLE_DUPLICATE      = 5          # Duplicatat de titre
+IMG_NOALT            = 6          # Pas de alt sur une image
+TITLE_LENGTH         = 7          # Titre trop long
+
 # Connexion Database
 
 y = YAML.load_file('./config/database.yml')["development"]
@@ -29,7 +31,7 @@ class Site < ActiveRecord::Base
   has_many :pages                         , :dependent => :destroy
   has_many  :hxes        , through: :pages, :dependent => :destroy
   has_many  :titles      , through: :pages, :dependent => :destroy
-  has_many  :seoerrors   , through: :pages, :dependent => :destroy
+  has_many  :seoerrors                    , :dependent => :destroy
 end
 
 class Page < ActiveRecord::Base
@@ -109,10 +111,11 @@ mArgv.each do |url|
         end
         # Title
         doc.css("title").each do |t|
-          p.titles.create(content:t.content, line: t[:line], page_id:p.id)
-        dupCheck = site.titles.all.uniq!
-        dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)} 
+          p.titles.create(content:t.content, line: t.line, page_id:p.id)
+          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size < 65
         end
+         dupCheck = site.titles.all.uniq!
+         dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)} 
         # Images
         doc.css("img").each do |i|
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
