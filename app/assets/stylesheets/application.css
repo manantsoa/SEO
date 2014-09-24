@@ -228,4 +228,14 @@ color:white;
 	background-size: 100% 100%;
 	margin-left: -30px;
 	position: absolute;
+	margin-top: -30px;
+}
+
+#img_refresh_report a{
+	background:url(Button_Refresh.png) no-repeat;
+	width:25px;
+	height:25px;
+	background-size: 100% 100%;
+	margin-left: -30px;
+	position: absolute;
 }

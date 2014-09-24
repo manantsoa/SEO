@@ -14,6 +14,7 @@ match '/report/:id/hx' , :to => 'report#hx'                                     
 match '/crawler'       , :to => 'pages#configCrawler'                            , via:[:get]
 match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites               , via:[:post]
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
+match '/crawler/:id'       , :to => 'pages#recrawl'                            , via:[:get]
 #match '/report/:id'
  
 
