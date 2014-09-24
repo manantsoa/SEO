@@ -8,6 +8,7 @@ require 'nokogiri'
 # Connexion au site
 require 'anemone'
 require 'benchmark'
+require 'sitemap_generator'
 
 
 # Erreurs, mets les en dur et je rm ton code !
@@ -32,6 +33,11 @@ class Site < ActiveRecord::Base
   has_many  :hxes        , through: :pages, :dependent => :destroy
   has_many  :titles      , through: :pages, :dependent => :destroy
   has_many  :seoerrors                    , :dependent => :destroy
+  has_one  :sitemap  , :dependent => :destroy
+end
+
+class Sitemap < ActiveRecord::Base
+  belongs_to :site
 end
 
 class Page < ActiveRecord::Base
@@ -68,13 +74,19 @@ mArgv.each do |url|
 	  site = Site.create
   end
   site.url = url
+  SitemapGenerator::Sitemap.default_host = url
+  SitemapGenerator::Sitemap.filename = Time.now.to_i
+  SitemapGenerator::Sitemap.compress = false
   site.name = url if site.name.nil?
   if !site || !site.url
     return
   end
+  pages = []
+  images = []
   Anemone.crawl(site.url, :threads => 40, :verbose => true, :obey_robots_txt => true) do |anemone|
    	anemone.on_every_page do |page|
       if page.html? && page.code.to_i == 200
+        pages << page.url
       	if (p = site.pages.find_by(url:page.url.to_s)) == nil
   		 	  p = site.pages.create
   			  p.url = page.url.to_s
@@ -92,7 +104,7 @@ mArgv.each do |url|
    	    hx = []
 	   	  (1..6).each do |x|
     	 		hx += doc.css("h" + x.to_s)
-           hx.each {|h| h[:x] = x.to_i if h[:x].nil?}
+          hx.each {|h| h[:x] = x.to_i if h[:x].nil?}
    	    end
         if hx.count > 0
           hx = hx.sort_by {|a| a[:line]}
@@ -114,19 +126,31 @@ mArgv.each do |url|
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
           p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size < 65
         end
-         dupCheck = site.titles.all.uniq!
-         dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)} 
-        # Images
+           # Images
         doc.css("img").each do |i|
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
           p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s, page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
-      end
- 		  p.save
- 	  end
+        end
+ 	      images << doc.css("img")
+  	    p.save
+ 	    end
+    end
+    dupCheck = site.titles.all.uniq!
+    dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}   
+    dupCheck = site.hxes.all.uniq! {|l| l.content}
+    dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)} 
   end
-  dupCheck = site.hxes.all.uniq! {|l| l.content}
-  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)} 
+  idx = 0
+  SitemapGenerator::Sitemap.create do
+    pages.each do |p|
+      imgPage = []
+      images[idx].each {|im| imgPage.append({:loc => im[:url]})}
+      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => imgPage
+     idx+=1
+    end
   end
+  site.sitemap.delete unless site.sitemap.nil?
+  Sitemap.create(str:File.open(Dir.pwd.to_s + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml").read.to_s, site_id:site.id)
   site.save
 end
 puts "Done."
