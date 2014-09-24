@@ -17,6 +17,7 @@ HX_DUPLICATE = 2                    # Duplicatat de balise <hx> sut le site
 HX_DIFF = 3                         # </h1> <h3> 
 PARSER   = 4                        # Erreur de Nokogiri
 TITLE_DUPLICATE = 5
+IMG_NOALT       = 6
 # Connexion Database
 
 y = YAML.load_file('./config/database.yml')["development"]
@@ -69,7 +70,7 @@ mArgv.each do |url|
   if !site || !site.url
     return
   end
-  Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
+  Anemone.crawl(site.url, :threads => 40, :verbose => true, :obey_robots_txt => true) do |anemone|
    	anemone.on_every_page do |page|
       if page.html? && page.code.to_i == 200
       	if (p = site.pages.find_by(url:page.url.to_s)) == nil
