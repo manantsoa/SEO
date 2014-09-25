@@ -1,12 +1,9 @@
 
 class ReportController < ApplicationController
 	def bypage
-		p = Site.find(params[:id]).pages.all.where(id:params[:pid]).first
+#		p = Site.find(params[:id]).pages.all.where(id:params[:pid]).first
 		@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
 		@Site = Site.find(params[:id])
-		if p.hxes.first.nil?
-			return
-		end
 	end
 	def initialize
 		super

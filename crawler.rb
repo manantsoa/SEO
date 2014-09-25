@@ -1,6 +1,6 @@
 require 'rubygems'
 # Base de donnés 
-require 'mysql'
+require (`uname` == "Linux\n" ? 'mysql' : 'pg')
 require 'yaml'
 require 'active_record'
 # HTTP Parser 
@@ -63,7 +63,6 @@ class Seoerror < ActiveRecord::Base
 end
 
 # Main
-
 mArgv = ARGV
 if mArgv[0].nil?
   Site.all.each { |s| mArgv.append(s.url)}
