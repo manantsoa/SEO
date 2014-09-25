@@ -114,7 +114,7 @@ mArgv.each do |url|
           (0..hx.count - 1).each do |idx|
             p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, desc: "h"+prv.to_s+" -> h"+hx[idx][:x].to_s, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
             unless (hx[idx][:x] >= maxHx || orderRem)
-              p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Première balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)  		 
+              p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)  		 
               orderRem = 1
             end
             p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
@@ -127,11 +127,13 @@ mArgv.each do |url|
           p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size < 65
         end
            # Images
+        tmp = []
         doc.css("img").each do |i|
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
+          tmp.append({:loc => i[:src]})
           p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s, page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
         end
- 	      images << doc.css("img")
+ 	      images << tmp
   	    p.save
  	    end
     end
@@ -143,9 +145,7 @@ mArgv.each do |url|
   idx = 0
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
-      imgPage = []
-      images[idx].each {|im| imgPage.append({:loc => im[:url]})}
-      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => imgPage
+      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => images[idx]
      idx+=1
     end
   end
