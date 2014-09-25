@@ -1,7 +1,5 @@
 
 class ReportController < ApplicationController
-	before_filter :load
-
 	def bypage
 		p = Site.find(params[:id]).pages.all.where(id:params[:pid]).first
 		@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
@@ -10,7 +8,14 @@ class ReportController < ApplicationController
 			return
 		end
 	end
-	def load
+	def initialize
+		super
+		@HX_ORDER = 1                        # Erreur d'ordonancement
+		@HX_DUPLICATE = 2                    # Duplicatat de balise <hx> sut le site
+		@HX_DIFF = 3                         # </h1> <h3> 
+		@PARSER   = 4                        # Erreur de Nokogiri
+		@TITLE_DUPLICATE = 5
+		@IMG_NOALT       = 6
 	end
 	def show
 		if (@site = Site.find(params[:id])) == nil

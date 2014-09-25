@@ -13,7 +13,12 @@
 <ul>
 <% @sites.each do |s| %>
 	<div id="report_index_block">
-	<div id="img_delete_report"><%= link_to "", "/report/" + s.id.to_s , method: :delete %></div>
+	<div id="img_delete_report">
+		<%= link_to "", "/report/" + s.id.to_s , method: :delete %>
+	</div>
+	<div id="img_refresh_report">
+		<%= link_to "", crawler_path + "/" + s.id.to_s %>
+	</div>
 	<% if s.name.to_s == "" %>
 		<li class="index_li_link"> Nom : <%= link_to s.name.nil? ? s.url : s.url, report_path(s.id) %> (<%= s.url %>)
 	<% else %>
@@ -21,6 +26,7 @@
 	<% end %>
 	</li>
 		<span id="txt">Crawler le : <%= s.created_at.to_s(:short) %></span><br/>
+		<span id="txt">Mis à jour le : <%= s.updated_at.to_s(:short) %></span><br/>
 		<span id="txt">Nombre de pages : <%= s.pages.count %></span><br/>
 		<span id="txt">Erreurs de balises < hx > :</span>
 		<font color=<% if s.seoerrors.where(code: [1, 2, 3]).count == 0 %> "green" <% else %> "red" <% end %>>
@@ -31,7 +37,7 @@
 			<% end %>
 		</font>
 		<span id="txt">Nombre d'erreurs html : </span>
-		<%= s.pages.joins('INNER JOIN html_errors ON html_errors.page_id = pages.id').count %><br/>
+		<%= s.seoerrors.where(code: 4).count %><br/>
 	</div>
 <% end %>
 </ul>

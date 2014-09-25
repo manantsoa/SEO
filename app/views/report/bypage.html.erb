@@ -19,38 +19,53 @@ Compte rendu détaillé : <br /><br />
 <% @Page.each do |p| %>
 	<div id ="bypage_balises">
 		Erreurs balise hx : 
-		<%= p.seoerrors.where(code: [1, 2, 3]).each do |e| %>
-			<li>h <%= e.line %> <%= h e.desc.to_s.force_encoding("UTF-8") %></li>
+		<font color=<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>"red"
+		<% else %>
+			"green"
+		<% end %>>
+			<%= p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %>
+		</font>
+		<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>
+			<% p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).each do |e| %>
+				<br />
+				<li>Erreur ligne : <%= e.line %> | <font color ="red"><%=  e.desc.to_s.force_encoding("UTF-8") %></font></li>
 			<% end %>
+		<% end %>
 		<br />
 		Balises : <br />
 			<% p.hxes.each do |h| %>
 				<li> Balise n° <%= p.hxes.index(h) + 1 %> > h<%= h.x %> <%= h h.content.force_encoding("UTF-8") %></li>
 			<% end %>
 	</div>
-	Images       : <%= p.imgs.count %><br />
 	Images sans alt : 
-	<% if p.imgs.where(alt:nil, alt: nil.to_s).count > 0 %> <font color="red"> 
-		<%= p.imgs.where(alt:nil, alt: nil.to_s).count %>/<%= p.imgs.count %>
-		<% p.imgs.where(alt:nil, alt: nil.to_s).each do |i| %>
-		 <li> <%= i.url %> </li>
+	<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %> <font color="red"> 
+		<%= p.seoerrors.where(code: @IMG_NOALT).count %>
+		<% p.seoerrors.where(code: @IMG_NOALT).each do |i| %>
+		 <li> <%= i.desc %> </li>
 		 <%end%>
-	<% end %> 
-	 </font>
+	<% else %>
+		0
+	<% end %>
+	</font>
 	<br />
-	Images sans title
-	<% if p.imgs.where(title:nil).count > 0 %> : <font color="red"> 
-		 <%= p.imgs.where(title:nil).count %>/<%= p.imgs.count %>
-		<% p.imgs.where(title:nil).each do |i| %>
-		<li> <%= i.url %> </li>
-		<%end%>
-		</font>
-	<% end %> 
 	<br />
-	Erreurs HTML : <font color=<% if !p.html_errors.count %> "green" <% else %> "red" <% end%>> <%= p.html_errors.count %>
+	Erreurs HTML : 
+	<% if p.seoerrors.where(code: @PARSER).count > 0 %> <font color="red"> 
+		<%= p.seoerrors.where(code: @PARSER).count %>
+	<% end %>
 	</center><br/>
-	<%  p.html_errors.each do |e| %>
-	<li>	<%= e.str %>  ligne <%= e.line %></li>
+	<%  p.seoerrors.where(code: @PARSER).each do |e| %>
+	<li>	<%= e.desc %>  ligne <%= e.line %></li>
+	<% end %>
+	</font>
+	Title Dupliqué : 
+	<% if p.seoerrors.where(code: @TITLE_DUPLICATE).count > 0 %> <font color="red"> 
+		<%= p.seoerrors.where(code: @TITLE_DUPLICATE).count %>
+		<% p.seoerrors.where(code: @TITLE_DUPLICATE).each do |i| %>
+		 <li> <%= i.desc %> </li>
+		 <%end%>
+	<% else %>
+		0
 	<% end %>
 	</font>
 <% end %>
