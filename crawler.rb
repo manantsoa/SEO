@@ -1,6 +1,6 @@
 require 'rubygems'
 # Base de donnés 
-require 'mysql'
+require (`uname` == "Linux\n" ? 'mysql' : 'pg')
 require 'yaml'
 require 'active_record'
 # HTTP Parser 
@@ -9,7 +9,7 @@ require 'nokogiri'
 require 'anemone'
 require 'benchmark'
 require 'sitemap_generator'
-
+require 'exifr'
 
 # Erreurs, mets les en dur et je rm ton code !
 
@@ -63,7 +63,6 @@ class Seoerror < ActiveRecord::Base
 end
 
 # Main
-
 mArgv = ARGV
 if mArgv[0].nil?
   Site.all.each { |s| mArgv.append(s.url)}
@@ -129,9 +128,18 @@ mArgv.each do |url|
            # Images
         tmp = []
         doc.css("img").each do |i|
+          i[:src] = site.url + i[:src][1..-1] if i[:src].start_with?("./")
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
-          tmp.append({:loc => i[:src]})
-          p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s, page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
+          if i[:src].end_with?(".jpeg") || i[:src].end_with?(".jpg")
+            begin
+              iData = open(i[:src])
+              dt = EXIFR::JPEG.new(iData).image_description
+            rescue
+              dt = nil
+            end
+            tmp.append({:loc => i[:src], :title => i[:alt], :caption => dt})
+            p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s, page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
+          end
         end
  	      images << tmp
   	    p.save
