@@ -11,7 +11,7 @@
 <h1>Configuration du crawler</h1>
 
 <%= form_for(Site.new) do |f| %>
-    Nom : <%= f.text_field :name %>
-    Url :<%= f.text_field :url %>
+    Nom : <%= f.text_field :name, :placeholder=>'nom du site', :required => true %>
+    Url :<%= f.text_field :url, :placeholder=>'url du site', :required => true %>
     <%= f.submit "Valider" %>
 <% end %>
