@@ -125,7 +125,7 @@ mArgv.each do |url|
         # Title
         doc.css("title").each do |t|
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
-          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size < 65
+          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
         end
            # Images
         tmp = []
@@ -164,4 +164,6 @@ mArgv.each do |url|
   site.save
 end
 puts "Done."
+open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'r') {|f| @fData = f.read}
+open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'w') {|f| f.write @fData.gsub! "<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:geo=\"http://www.google.com/geo/schemas/sitemap/1.0\" xmlns:news=\"http://www.google.com/schemas/sitemap-news/0.9\" xmlns:mobile=\"http://www.google.com/schemas/sitemap-mobile/1.0\" xmlns:pagemap=\"http://www.google.com/schemas/sitemap-pagemap/1.0\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\">" }
 exit(0)

@@ -15,7 +15,9 @@ class ReportController < ApplicationController
 		@IMG_NOALT       = 6
 	end
 	def show
-		if (@site = Site.find(params[:id])) == nil
+		begin	
+			@site = Site.find(params[:id])
+		rescue
 			redirect_to root_path
 		end
 	end
