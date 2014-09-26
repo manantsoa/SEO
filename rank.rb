@@ -73,4 +73,8 @@ keyw = []
 (1..ARGV.size - 1).each {|s| keyw.append(ARGV[s].dup)}
 #puts keyw
 #puts ARGV[0]
-puts googlePos(ARGV[0], keyw).each {|key, value| Position.create(query:key, pos:value)}
+begin
+	site = Site.find(ARGV[0].to_i)
+rescue nil
+
+puts googlePos(site.url, keyw).each {|key, value| site.positions.create(query:key, pos:value)} unless site.nil?
