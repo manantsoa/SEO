@@ -155,7 +155,7 @@ mArgv.each do |url|
   idx = 0
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
-      add :images => images[idx] #p.path.to_s, :changefreq => 'daily', :priority => 0.5, 
+      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => images[idx] 
      idx+=1
     end
   end
