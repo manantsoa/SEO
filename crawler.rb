@@ -130,7 +130,7 @@ mArgv.each do |url|
            # Images
         tmp = []
         doc.css("img").each do |i|
-          i[:src] = site.url + i[:src][1..-1] if i[:src].start_with?("./")
+          i[:src] = site.url + i[:src][2..-1] if i[:src].start_with?("./")
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
           if i[:src].end_with?(".jpeg") || i[:src].end_with?(".jpg")
             begin
