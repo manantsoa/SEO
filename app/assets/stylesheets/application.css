@@ -241,7 +241,7 @@ color:white;
 }
 
 #img_sitemap_report a{
-	background:url(sitemap.jpg) no-repeat;
+	background:url(sitemap.png) no-repeat;
 	width:25px;
 	height:25px;
 	background-size: 100% 100%;
@@ -257,4 +257,38 @@ color:white;
 	background-size: 100% 100%;
 	position: absolute;
 	margin-top: -100px;
+}
+
+#url_show a
+{
+	width: 900px;
+}
+#error_show
+{
+	margin-left: 1000px;
+	margin-top: -18px;
+}
+
+#bloc_url_show{
+	position:relative;
+	border-bottom:1px solid black;
+	margin-bottom: 20px;
+	padding:10px;
+}
+#error_show_noalt
+{
+	width:150px;
+	position:absolute;
+}
+#error_show_titlesize
+{
+	width:150px;
+	position:absolute;
+	margin-left: 150px;
+}
+#error_show_html
+{
+	width:150px;
+	position:absolute;
+	margin-left: 300px;
 }

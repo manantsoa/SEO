@@ -10,9 +10,10 @@ class ReportController < ApplicationController
 		@HX_ORDER = 1                        # Erreur d'ordonancement
 		@HX_DUPLICATE = 2                    # Duplicatat de balise <hx> sut le site
 		@HX_DIFF = 3                         # </h1> <h3> 
-		@PARSER   = 4                        # Erreur de Nokogiri
-		@TITLE_DUPLICATE = 5
-		@IMG_NOALT       = 6
+		@PARSER = 4                        	 # Erreur de Nokogiri
+		@TITLE_DUPLICATE = 5				 # Duplicatat de titre
+		@IMG_NOALT = 6						 # Pas de alt sur une image
+		@TITLE_LENGTH = 7          			 # Titre trop long
 	end
 	def show
 		if (@site = Site.find(params[:id])) == nil
