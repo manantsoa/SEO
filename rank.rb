@@ -76,5 +76,13 @@ keyw = []
 begin
 	site = Site.find(ARGV[0].to_i)
 rescue nil
-
-puts googlePos(site.url, keyw).each {|key, value| site.positions.create(query:key, pos:value)} unless site.nil?
+end
+googlePos(site.url, keyw).each do |key, value| 
+	begin
+		r = site.positions.where(query:key).first
+		r.pos = value
+		r.save!
+	rescue
+		r = site.positions.create(query:key, pos:value)
+	end
+end
