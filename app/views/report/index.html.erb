@@ -22,11 +22,7 @@
 	<div id="img_sitemap_report">
 	<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s %><% end %>
 	</div>
-	<% if s.name.to_s == "" %>
-		<li class="index_li_link"> Nom : <%= link_to s.name.nil? ? s.url : s.url, report_path(s.id) %> (<%= s.url %>)
-	<% else %>
-		<li class="index_li_link"> Nom : <%= link_to s.name.nil? ? s.url : s.name, report_path(s.id) %> (<%= s.url %>)
-	<% end %>
+		<li class="index_li_link"><%= link_to s.url, report_path(s.id) %>
 	</li>
 		<span id="txt">Crawl le : <%= s.created_at.to_s(:short) %></span><br/>
 		<span id="txt">Mis à jour le : <%= s.updated_at.to_s(:short) %></span><br/>
