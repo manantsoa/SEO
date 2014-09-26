@@ -11,7 +11,8 @@
 <% end %>
 <center><h1> Rapport du site <%= @site.name %> </h1> <br /><br />
 
-Adresse URL     : <%= @site.url %> <br />
+<!-- Preview des erreurs début -->
+
 Nombre de pages : <%= @site.pages.count %> <br />
 
 Erreurs de balises < hx > :
@@ -22,25 +23,71 @@ Erreurs de balises < hx > :
 	<%= @site.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %> erreurs<br />
 <% end %>
 </font>
-<br/>
-<% @site.pages.each do |p| %>
-	<%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %>
-	<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %><font color="red">
-		<br/>
-	 	Erreurs balise hx : <%= p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %>
-		</font>
-	<%end %>
-	<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %><font color="red"> 
-		<br/>
-	 	Images sans Alt : <%= p.seoerrors.where(code: @IMG_NOALT).count %>
-		</font>
-	<%end %>
-	<% if p.seoerrors.where(code: @PARSER).count > 0 %>
-		<font color="red">
-		<br/>
-		Erreurs HTML : <%= p.seoerrors.where(code: @PARSER).count %>
-		</font>
-	<% end %>
-	<br/>
+Erreurs de taille sur le Title :
+<font color=<% if @site.seoerrors.where(code: [@TITLE_LENGTH]).count == 0 %> "green" <% else %> "red" <% end %>>
+<% if @site.seoerrors.where(code: [@TITLE_LENGTH]).count == 0 %>
+	Aucune erreur<br />
+<%else%>
+	<%= @site.seoerrors.where(code: [@TITLE_LENGTH]).count %> erreurs<br />
 <% end %>
+</font>
+Erreurs HTML :
+<font color=<% if @site.seoerrors.where(code: [@PARSER]).count == 0 %> "green" <% else %> "red" <% end %>>
+<% if @site.seoerrors.where(code: [@PARSER]).count == 0 %>
+	Aucune erreur<br />
+<%else%>
+	<%= @site.seoerrors.where(code: [@PARSER]).count %> erreurs<br />
+<% end %>
+</font>
+Erreurs d'images sans Alt :
+<font color=<% if @site.seoerrors.where(code: [@IMG_NOALT]).count == 0 %> "green" <% else %> "red" <% end %>>
+<% if @site.seoerrors.where(code: [@IMG_NOALT]).count == 0 %>
+	Aucune erreur<br />
+<%else%>
+	<%= @site.seoerrors.where(code: [@IMG_NOALT]).count %> erreurs<br />
+<% end %>
+</font>
+<br/>
 </center>
+
+<!-- Preview des erreurs fin -->
+<br/><br/><br/>
+<!-- Listing des pages début -->
+
+<% @site.pages.each do |p| %>
+	<div id="bloc_url_show">
+		<div id="url_show"><%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %></div>
+		<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>
+			<font color="red">
+		 		Erreurs balise hx : <%= p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %>
+			</font>
+		<%end %>
+		<div id="error_show">
+			<div id="error_show_noalt">
+				<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %>
+					<font color="red"> 		
+				 		Images sans Alt : <%= p.seoerrors.where(code: @IMG_NOALT).count %>
+					</font>
+				<%end %>
+			</div>
+			<div id="error_show_titlesize">
+				<% if p.seoerrors.where(code: @TITLE_LENGTH).count > 0 %>
+					<font color="red"> 
+				 		Title trop long : <%= p.seoerrors.where(code: @TITLE_LENGTH).count %>
+					</font>
+				<%end %>
+			</div>
+			<div id="error_show_html">
+				<% if p.seoerrors.where(code: @PARSER).count > 0 %>
+					<font color="red">
+						Erreurs HTML : <%= p.seoerrors.where(code: @PARSER).count %>
+					</font>
+				<% end %>
+			</div>
+			<br/>
+		</div>
+	</div>
+<% end %>
+
+
+<!-- Listing des pages fin -->
