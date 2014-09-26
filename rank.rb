@@ -6,7 +6,9 @@ require 'rubygems'
 require (`uname` == "Linux\n" ? 'mysql' : 'pg')
 require 'yaml'
 require 'active_record'
+require 'openssl'
 
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 y = YAML.load_file('./config/database.yml')["development"]
 ActiveRecord::Base.establish_connection(y)
 

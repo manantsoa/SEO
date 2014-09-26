@@ -15,6 +15,7 @@ match '/crawler'       , :to => 'pages#configCrawler'                           
 match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites               , via:[:post]
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
 match '/crawler/:id'       , :to => 'pages#recrawl'                            , via:[:get]
+match '/report/:id/ranks'       , :to => 'report#ranks'                            , via:[:get]
 #match '/report/:id'
  
 
