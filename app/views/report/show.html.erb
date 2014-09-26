@@ -57,12 +57,14 @@ Erreurs d'images sans Alt :
 <% @site.pages.each do |p| %>
 	<div id="bloc_url_show">
 		<div id="url_show"><%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %></div>
-		<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>
-			<font color="red">
-		 		Erreurs balise hx : <%= p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %>
-			</font>
-		<%end %>
 		<div id="error_show">
+			<div id="error_show_hx">
+				<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>
+					<font color="red">
+				 		Erreurs balise hx : <%= p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %>
+					</font>
+				<%end %>
+			</div>
 			<div id="error_show_noalt">
 				<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %>
 					<font color="red"> 		

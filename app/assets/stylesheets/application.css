@@ -14,7 +14,7 @@
  *= require_self
  */
 body{
-	background: #ABDCD6;
+	background:url(metal.png) repeat;
 }
 
 li{
@@ -275,20 +275,26 @@ color:white;
 	margin-bottom: 20px;
 	padding:10px;
 }
-#error_show_noalt
+#error_show_hx
 {
 	width:150px;
 	position:absolute;
 }
-#error_show_titlesize
+#error_show_noalt
 {
 	width:150px;
 	position:absolute;
 	margin-left: 150px;
 }
-#error_show_html
+#error_show_titlesize
 {
 	width:150px;
 	position:absolute;
 	margin-left: 300px;
+}
+#error_show_html
+{
+	width:150px;
+	position:absolute;
+	margin-left: 450px;
 }

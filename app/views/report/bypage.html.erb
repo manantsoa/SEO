@@ -43,7 +43,7 @@ Compte rendu détaillé : <br /><br />
 	<% if p.seoerrors.where(code: @TITLE_LENGTH).count > 0 %> <font color="red"> 
 		Title trop long :<br />
 		<% p.seoerrors.where(code: @TITLE_LENGTH).each do |i| %>
-		 Taille : <%= i.desc.length %><br />
+		 Taille : <%= i.desc.length %> caractères<br />
 		 <%= i.desc %><br />
 		 <%end%>
 	 	</font>

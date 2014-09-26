@@ -20,7 +20,7 @@
 		<%= link_to "", crawler_path + "/" + s.id.to_s %>
 	</div>
 	<div id="img_sitemap_report">
-	<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s %><% end %>
+	<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s , target: "_blank" %><% end %>
 	</div>
 		<li class="index_li_link"><%= link_to s.url, report_path(s.id) %>
 	</li>
