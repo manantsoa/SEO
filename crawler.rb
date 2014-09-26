@@ -97,7 +97,9 @@ mArgv.each do |url|
         doc = Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11)
         # Erreurs HTML
         doc.errors.each do |e|
-          p.seoerrors.create(code: PARSER, desc: e.to_s, line:e.line, page_id:p.id, site_id: p.site.id)
+          unless ["Tag video invalid", "Tag source invalid", "Tag marquee invalid", "Namespace prefix gcse is not defined", "Tag gcse:search invalid", "Tag nav invalid"].include?(e.to_s)
+            p.seoerrors.create(code: PARSER, desc: e.to_s, line:e.line, page_id:p.id, site_id: p.site.id)
+          end
         end
         # Hx
    	    hx = []
@@ -153,12 +155,12 @@ mArgv.each do |url|
   idx = 0
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
-      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => images[idx]
+      add :images => images[idx] #p.path.to_s, :changefreq => 'daily', :priority => 0.5, 
      idx+=1
     end
   end
   site.sitemap.delete unless site.sitemap.nil?
-  Sitemap.create(str:File.open(Dir.pwd.to_s + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml").read.to_s, site_id:site.id)
+  site.sitemap = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s + ".xml", site_id:site.id)
   site.save
 end
 puts "Done."

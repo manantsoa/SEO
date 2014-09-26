@@ -239,3 +239,13 @@ color:white;
 	margin-left: -30px;
 	position: absolute;
 }
+
+#img_sitemap_report a{
+	background:url(sitemap.jpg) no-repeat;
+	width:25px;
+	height:25px;
+	background-size: 100% 100%;
+	margin-left: -30px;
+	margin-top: 30px;
+	position: absolute;
+}
