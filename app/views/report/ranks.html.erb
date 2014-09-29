@@ -1,9 +1,24 @@
 Id : <%= @site.id %><br />
 Url : <%= @site.url %><br />
 
+<% @ranks.each do |p| %>
+	<% if p.query.to_s == nil or p.query.to_s == "" %>
+		<% next %>
+		totooooooooooooooooooooooooooooooooooo
+	<% end %>
+	<%= p.query.length %>
+	<% if p.pos == 0 %>
+		Requete : <%= p.query.gsub! "+", " " %> => Pos : <font color="red">>100</font><br />
+	<% else %>
+		Requete : <%= p.query.gsub! "+", " " %> => Pos : <%= p.pos %><br />
+	<% end %>
+<% end %>
+
 <br /><br /><br /><br />
 <%= form_tag("", method: "post") do %>
-  <div id="area_ranks"><%= text_area_tag(:q)%></div>
+  <div id="area_ranks">
+  	<%= text_area_tag(:q) %>
+  </div>
   <% hidden_field_tag(:id, @site.id) %>
   <%= submit_tag("Add") %>
 <% end %>
