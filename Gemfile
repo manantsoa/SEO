@@ -45,11 +45,18 @@ group :test, :development do
 	gem 'guard-rspec'
 end
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo'
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
-
+if `uname` == "Linux\n"
+	gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
+	gem 'tzinfo'
+	gem 'pg'
+else
+	gem 'mysql'
+end
 gem 'nokogiri'
 gem 'anemone'
 gem 'yaml_db'
-gem 'pg'
+gem 'sitemap_generator'
+gem 'thin'
+gem 'exifr'
+gem 'google-search'
+gem 'ruby-progressbar'
