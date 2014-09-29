@@ -166,7 +166,6 @@ Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => tru
     runPage(d, site)
     pb.increment
   end
-  ths.each {|t| t.join}
   dupCheck = site.titles.all.uniq!
   dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}   
   dupCheck = site.hxes.all.uniq! {|l| l.content}
