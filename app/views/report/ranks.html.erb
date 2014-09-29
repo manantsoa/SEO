@@ -2,11 +2,6 @@ Id : <%= @site.id %><br />
 Url : <%= @site.url %><br />
 
 <% @ranks.each do |p| %>
-	<% if p.query.to_s == nil or p.query.to_s == "" %>
-		<% next %>
-		totooooooooooooooooooooooooooooooooooo
-	<% end %>
-	<%= p.query.length %>
 	<% if p.pos == 0 %>
 		Requete : <%= p.query.gsub! "+", " " %> => Pos : <font color="red">>100</font><br />
 	<% else %>

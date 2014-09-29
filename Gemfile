@@ -45,7 +45,7 @@ group :test, :development do
 	gem 'guard-rspec'
 end
 
-if `uname` == "Linux\n"
+if `uname` != "Linux\n"
 	gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 	gem 'tzinfo'
 	gem 'pg'
