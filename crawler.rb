@@ -10,7 +10,12 @@ require 'anemone'
 require 'benchmark'
 require 'sitemap_generator'
 require 'exifr'
+require 'ruby-progressbar'
 
+#require 'drb/drb'
+
+$images = []
+ #processHost="druby://localhost:8787"
 # Erreurs, mets les en dur et je rm ton code !
 
 HX_ORDER             = 1          # Erreur d'ordonancement
@@ -22,12 +27,11 @@ IMG_NOALT            = 6          # Pas de alt sur une image
 TITLE_LENGTH         = 7          # Titre trop long
 
 # Connexion Database
-
 y = YAML.load_file('./config/database.yml')["development"]
 ActiveRecord::Base.establish_connection(y)
 
 # Classes ActiveRecord
- 
+
 class Site < ActiveRecord::Base
   has_many :pages                         , :dependent => :destroy
   has_many  :hxes        , through: :pages, :dependent => :destroy
@@ -62,75 +66,56 @@ class Seoerror < ActiveRecord::Base
   has_one    :site, through: :page
 end
 
-# Main
-mArgv = ARGV
-if mArgv[0].nil?
-  Site.all.each { |s| mArgv.append(s.url)}
-end
-mArgv.each do |url|
-  url = 'http://' + url unless url.start_with?('http://') || url.start_with?('https://')
-  if (site = Site.find_by(url:url)) == nil
-	  site = Site.create
+def runPage(page, site)
+  if (p = site.pages.find_by(url:page.url.to_s)) == nil
+    p = site.pages.create
+    p.url = page.url.to_s
   end
-  site.url = url
-  SitemapGenerator::Sitemap.default_host = url
-  SitemapGenerator::Sitemap.filename = Time.now.to_i
-  SitemapGenerator::Sitemap.compress = false
-  site.name = url if site.name.nil?
-  if !site || !site.url
-    return
-  end
-  pages = []
-  images = []
-  Anemone.crawl(site.url, :threads => 40, :verbose => true, :obey_robots_txt => true) do |anemone|
-   	anemone.on_every_page do |page|
-      if page.html? && page.code.to_i == 200
-        pages << page.url
-      	if (p = site.pages.find_by(url:page.url.to_s)) == nil
-  		 	  p = site.pages.create
-  			  p.url = page.url.to_s
-  		  end
+        #IO.popen("parser.rb #{site.id} #{p.id}") {|fd| fd.puts page.body}
         p.site_id = site.id
         p.seoerrors.delete_all
         p.hxes.delete_all
         p.titles.delete_all
         doc = Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11)
+        #FRONT_OBJECT = SplitServer.new ([Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11), p])
+               # threads << Thread.new {spawn("ruby img.rb")}
+        #threads << Thread.new {spawn("ruby errors.rb")}
         # Erreurs HTML
         doc.errors.each do |e|
-          unless ["Tag video invalid", "Tag source invalid", "Tag marquee invalid", "Namespace prefix gcse is not defined", "Tag gcse:search invalid", "Tag nav invalid"].include?(e.to_s)
+          unless ["Tag video invalid", "Tag source invalid", "Tag marquee invalid", "Namespace prefix gcse is not defined", "Tag gcse:search invalid", "Tag gcse:searchbox-only invalid", "Tag nav invalid"].include?(e.to_s)
             p.seoerrors.create(code: PARSER, desc: e.to_s, line:e.line, page_id:p.id, site_id: p.site.id)
           end
         end
         # Hx
-   	    hx = []
-	   	  (1..6).each do |x|
-    	 		hx += doc.css("h" + x.to_s)
+        hx = []
+        (1..6).each do |x|
+          hx += doc.css("h" + x.to_s)
           hx.each {|h| h[:x] = x.to_i if h[:x].nil?}
-   	    end
+        end
         if hx.count > 0
           hx = hx.sort_by {|a| a[:line]}
           prv = hx[0][:x]
           maxHx = prv
           orderRem = 0
           (0..hx.count - 1).each do |idx|
-            p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, desc: "h"+prv.to_s+" -> h"+hx[idx][:x].to_s, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
-            unless (hx[idx][:x] >= maxHx || orderRem)
-              p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)  		 
-              orderRem = 1
-            end
-            p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
-            prv = hx[idx][:x]
+           p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, desc: "h"+prv.to_s+" -> h"+hx[idx][:x].to_s, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
+           unless (hx[idx][:x] >= maxHx || orderRem)
+            p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)      
+            orderRem = 1
           end
+          p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
+          prv = hx[idx][:x]
         end
+      end
         # Title
         doc.css("title").each do |t|
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
           p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
         end
            # Images
-        tmp = []
-        doc.css("img").each do |i|
-          i[:src] = site.url + i[:src][2..-1] if i[:src].start_with?("./")
+           tmp = []
+           doc.css("img").each do |i|
+            i[:src] = site.url + i[:src][2..-1] if i[:src].start_with?("./")
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
           if i[:src].end_with?(".jpeg") || i[:src].end_with?(".jpg")
             begin
@@ -143,20 +128,54 @@ mArgv.each do |url|
             p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s, page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
           end
         end
- 	      images << tmp
-  	    p.save
- 	    end
-    end
-    dupCheck = site.titles.all.uniq!
-    dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}   
-    dupCheck = site.hxes.all.uniq! {|l| l.content}
-    dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)} 
+        $images << tmp
+        p.save
+      end
+
+# Main
+mArgv = ARGV
+if mArgv[0].nil?
+  Site.all.each { |s| mArgv.append(s.url)}
+end
+mArgv.each do |url|
+  datas = []
+  url = 'http://' + url unless url.start_with?('http://') || url.start_with?('https://')
+  if (site = Site.find_by(url:url)) == nil
+   site = Site.create
+ end
+ site.url = url
+ SitemapGenerator::Sitemap.default_host = url
+ SitemapGenerator::Sitemap.filename = Time.now.to_i
+ SitemapGenerator::Sitemap.compress = false
+ site.name = url if site.name.nil?
+ if !site || !site.url
+  return
+end
+pages = []
+$images = []
+Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
+  anemone.on_every_page do |page|
+    if page.html? && page.code.to_i == 200
+      pages << page.url
+      datas << page
+ 	    end #ahah
+    end 
   end
+  pb = ProgressBar.create(:total => datas.count, :format => '%a %B %p%% %t')
+  datas.each do |d| 
+    runPage(d, site)
+    pb.increment
+  end
+  ths.each {|t| t.join}
+  dupCheck = site.titles.all.uniq!
+  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}   
+  dupCheck = site.hxes.all.uniq! {|l| l.content}
+  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}
   idx = 0
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
-      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => images[idx] 
-     idx+=1
+      add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => $images[idx] 
+      idx+=1
     end
   end
   site.sitemap.delete unless site.sitemap.nil?
