@@ -18,15 +18,17 @@ class Position < ActiveRecord::Base
 end
 
 def googlePos(url, keyw)
+	res = []
 	url = URI.parse(url)
 	keyw.each do |k|
 		pos = 0
 		puts "Searching for #{k}"
 		Google::Search::Web.new(:query => k, :language => :fr).each do |q|
 			pos += 1
-			puts URI.parse(q.uri).host
 			if URI.parse(q.uri).host == url.host
 				puts "Query : #{k} | Position : #{pos}"
+				res[k] = pos
+				break
 			end
 		end
 	end
