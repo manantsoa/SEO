@@ -33,6 +33,10 @@ class ReportController < ApplicationController
 		# Juste parce qu'on aime coder moche <3
 		# Owi !!!
 	end
+	def ranks
+		site = Site.find(params[:id])
+		@ranks = site.positions
+	end
 	def index
 		@sites = Site.all
 	end
