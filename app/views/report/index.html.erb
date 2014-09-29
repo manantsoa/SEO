@@ -13,17 +13,20 @@
 <ul>
 <% @sites.each do |s| %>
 	<div id="report_index_block">
-	<div id="img_delete_report">
-		<%= link_to "", "/report/" + s.id.to_s , method: :delete %>
-	</div>
-	<div id="img_refresh_report">
-		<%= link_to "", crawler_path + "/" + s.id.to_s %>
-	</div>
-	<div id="img_sitemap_report">
-	<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s , target: "_blank" %><% end %>
-	</div>
-		<li class="index_li_link"><%= link_to s.url, report_path(s.id) %>
-	</li>
+		<div id="img_delete_report">
+			<%= link_to "", "/report/" + s.id.to_s , method: :delete %>
+		</div>
+		<div id="img_refresh_report">
+			<%= link_to "", crawler_path + "/" + s.id.to_s %>
+		</div>
+		<div id="img_sitemap_report">
+			<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s , target: "_blank" %><% end %>
+		</div>
+			<div id="img_search_report">
+			<%= link_to "", "report/ranks/" + s.id.to_s %>
+		</div>
+		<li class="index_li_link"><%= link_to s.url, report_path(s.id) %></li>
+		<span id="txt">Id : <%= s.id %></span><br/>
 		<span id="txt">Crawl le : <%= s.created_at.to_s(:short) %></span><br/>
 		<span id="txt">Mis à jour le : <%= s.updated_at.to_s(:short) %></span><br/>
 		<span id="txt">Nombre de pages : <%= s.pages.count %></span><br/>

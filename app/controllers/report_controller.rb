@@ -34,8 +34,16 @@ class ReportController < ApplicationController
 		# Owi !!!
 	end
 	def ranks
-		site = Site.find(params[:id])
-		@ranks = site.positions
+		@site = Site.find(params[:id])
+		@ranks = @site.positions
+	end
+	def ranks_add
+		query = params[:q].chomp
+		puts query
+		id = params[:id]
+		query.gsub! "\r\n", "\" \""
+		spawn("ruby rank.rb " + id.to_s + " \"" + query.to_s + "\"")
+		redirect_to root_path
 	end
 	def index
 		@sites = Site.all

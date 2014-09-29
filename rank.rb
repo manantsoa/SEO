@@ -59,7 +59,6 @@ def googlePos(url, keywords, depth = 10, verbose = true)
 				resp = open(query).read
 			rescue Exception => e
 				puts e.to_s
-				puts e.traceback if verbose
 				resp = "<html></html>"
 			end
 			if resp.include? url.host
@@ -70,7 +69,7 @@ def googlePos(url, keywords, depth = 10, verbose = true)
 	end
 	return ret
 end
-
+puts ARGV
 keyw = []
 (1..ARGV.size - 1).each {|s| keyw.append(ARGV[s].dup)}
 #puts keyw

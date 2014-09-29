@@ -1,3 +1,9 @@
-<% @ranks.each do |p| %>
-	<%= p.query %> => <%= p.pos %>
+Id : <%= @site.id %><br />
+Url : <%= @site.url %><br />
+
+<br /><br /><br /><br />
+<%= form_tag("", method: "post") do %>
+  <div id="area_ranks"><%= text_area_tag(:q)%></div>
+  <% hidden_field_tag(:id, @site.id) %>
+  <%= submit_tag("Add") %>
 <% end %>
