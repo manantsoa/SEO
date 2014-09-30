@@ -3,7 +3,7 @@
 <div id="Menu-top">
 	<ul>
 		<div id="Menu-top-li">
-			<li><%= link_to "Liste des rapports", ".." %></li>
+			<li><%= link_to "Liste des rapports", list_path %></li>
 			<li><%= link_to "Index", root_path %></li>
 			<li><%= link_to "Ajouter un site", crawler_path %></li>
 			<li><%= link_to "Retour", "../" + @Site.id.to_s %></li>
@@ -41,7 +41,7 @@ Compte rendu détaillé : <br /><br />
 			<% end %>
 	</div>
 	<% if p.seoerrors.where(code: @TITLE_LENGTH).count > 0 %> <font color="red"> 
-		Title trop long :<br />
+		Title trop long<br />
 		<% p.seoerrors.where(code: @TITLE_LENGTH).each do |i| %>
 		 Taille : <%= i.desc.length %> caractères<br />
 		 <%= i.desc %><br />

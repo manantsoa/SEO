@@ -1,6 +1,22 @@
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<div id="Menu-top-li">
+			<li><%= link_to "Liste des rapports", list_path %></li>
+			<li><%= link_to "Index", root_path %></li>
+			<li><%= link_to "Ajouter un site", crawler_path %></li>
+		</div>
+	</ul>
+</div>
+<% end %>
+
 Id : <%= @site.id %><br />
 Url : <%= @site.url %><br />
 
+<div id ="bypage_balises">
+<% if @ranks.count == 0 %>
+	Aucunes position enregistré
+<% end %>
 <% @ranks.each do |p| %>
 	<% if p.pos == 0 %>
 		Requete : <%= p.query.gsub! "+", " " %> => Pos : <font color="red">>100</font><br />
@@ -8,6 +24,8 @@ Url : <%= @site.url %><br />
 		Requete : <%= p.query.gsub! "+", " " %> => Pos : <%= p.pos %><br />
 	<% end %>
 <% end %>
+</div>
+
 
 <br /><br /><br /><br />
 <%= form_tag("", method: "post") do %>

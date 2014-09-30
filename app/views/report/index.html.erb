@@ -23,7 +23,7 @@
 			<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s , target: "_blank" %><% end %>
 		</div>
 			<div id="img_search_report">
-			<%= link_to "", "report/ranks/" + s.id.to_s %>
+			<%= link_to "", list_path + "/ranks/" +  s.id.to_s %>
 		</div>
 		<li class="index_li_link"><%= link_to s.url, report_path(s.id) %></li>
 		<span id="txt">Id : <%= s.id %></span><br/>

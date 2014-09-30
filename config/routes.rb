@@ -15,9 +15,9 @@ match '/crawler'       , :to => 'pages#configCrawler'                           
 match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites               , via:[:post]
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
 match '/crawler/:id'       , :to => 'pages#recrawl'                            , via:[:get]
-match '/report/ranks/:id'       , :to => 'report#ranks'                            , via:[:get]
-match '/report/ranks/:id'       , :to => 'report#ranks_add'                            , via:[:post] 
-
+match '/report/ranks/:id'       , :to => 'report#ranks'                          , via:[:get]
+match '/report/ranks/:id'       , :to => 'report#ranks_add'                      , via:[:post] 
+match '/report'       , :to => 'report#index', :as => :list                     , via:[:get]
 
 
   # Example of regular route:
