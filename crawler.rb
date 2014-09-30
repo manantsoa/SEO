@@ -114,6 +114,7 @@ def runPage(page, site)
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
           p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
         end
+
         hst = URI.parse(site.url).host
         doc.css("a").each do |a|
           if a["href"].nil?
@@ -169,7 +170,7 @@ $images = []
 Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
   anemone.on_every_page do |page|
     if page.html? && page.code.to_i == 200
-      pages << page.url
+      pages << page.url unless page.url == site.url
       datas << page
  	    end #ahah
     end 
