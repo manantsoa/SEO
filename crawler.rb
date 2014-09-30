@@ -169,9 +169,9 @@ pages = []
 $images = []
 puts "Crawling #{site.url}"
 crawlPb = ProgressBar.create(:total => nil,
-                    :format         => '%a %bᗧ%i %p%% %t',
+                    :format         => '%a %bC%i %p%% %t',
                     :progress_mark  => ' ',
-                    :remainder_mark => '･')
+                    :remainder_mark => 'o')
 Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => true) do |anemone|
   anemone.on_every_page do |page|
     if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
@@ -185,9 +185,9 @@ Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => tr
   crawlPb.stop
   puts "Crawl over on #{pages.size} pages. Filling database."
   pb = ProgressBar.create(:total    => datas.count,
-                    :format         => '%a %bᗧ%i %p%% %t',
+                    :format         => '%a %bC%i %p%% %t',
                     :progress_mark  => ' ',
-                    :remainder_mark => '･')
+                    :remainder_mark => 'o')
   datas.each do |d|
     runPage(d, site)
     pb.increment
@@ -201,7 +201,7 @@ Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => tr
  #dupCheck = []
   #site.hxes.each { |hx| dupCheck += site.hxes.select { |c|site.hxes.count {|c| c.content.to_s == hx.content.to_s} > 1} }
   dupCheck = site.hxes - site.hxes.uniq! {|l| l.content}
-  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: "[ Dupliqué ] " + e.content.force_encoding("utf-8"))}
+  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: "[ Duplique ] " + e.content.force_encoding("utf-8"))}
   idx = 0
   puts 'Generating Sitemap'
   SitemapGenerator::Sitemap.create do
