@@ -18,10 +18,10 @@ Url : <%= @site.url %><br />
 	Aucunes position enregistré
 <% end %>
 <% @ranks.each do |p| %>
-	<% if p.pos == 0 %>
-		Requete : <%= p.query.gsub! "+", " " %> => Pos : <font color="red">>100</font><br />
+	<% if p.pos == -1 %>
+		Requete : <%= p.query %> => Pos : <font color="red">>100</font><br />
 	<% else %>
-		Requete : <%= p.query.gsub! "+", " " %> => Pos : <%= p.pos %><br />
+		Requete : <%= p.query %> => Pos : <%= p.pos %><br />
 	<% end %>
 <% end %>
 </div>
