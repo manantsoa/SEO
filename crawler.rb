@@ -122,8 +122,8 @@ def runPage(page, site)
             next
           end
           dst = URI.parse(a["href"])
-          if dst.host.to_s != hst.to_s  && (!a["rel"] || !a["rel"].include?("nofollow"))
-            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+          if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a[:url].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
         end
            # Images
@@ -187,7 +187,7 @@ Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => tru
  #dupCheck = []
   #site.hxes.each { |hx| dupCheck += site.hxes.select { |c|site.hxes.count {|c| c.content.to_s == hx.content.to_s} > 1} }
   dupCheck = site.hxes - site.hxes.uniq! {|l| l.content}
-  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}
+  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: "[ Dupliqué ] " + e.content.force_encoding("utf-8"))}
   idx = 0
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
