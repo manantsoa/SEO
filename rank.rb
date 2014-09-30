@@ -4,6 +4,7 @@ require (`uname` == "Linux\n" ? 'mysql' : 'pg')
 require 'yaml'
 require 'active_record'
 require 'openssl'
+require 'htmlentities'
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 y = YAML.load_file('./config/database.yml')["development"]
@@ -19,17 +20,22 @@ end
 
 def googlePos(url, keyw)
 	res = Hash.new
+	url = 'http://' + url unless url.start_with?('http://') || url.start_with?('https://')
 	url = URI.parse(url)
+	coder = HTMLEntities.new
+
 	keyw.each do |k|
+		res[k] = -1
 		puts "Searching for #{k}"
-		Google::Search::Web.new(:query => k, :language => :fr).each do |q|
-			if URI.parse(q.uri).host == url.host
+		Google::Search::Web.new(:query => k, :language => :fr).sort_by {|o| o.index }.each do |q|
+			if URI.parse(coder.decode(q.uri)).host.include? url.host
 				puts "Query : #{k} | Position : #{q.index + 1}"
 				res[k] = q.index + 1
 				break
 			end
 		end
 	end
+	return res
 end
 
 keyw = []
@@ -43,7 +49,7 @@ rescue
 end
 googlePos(site.url, keyw).each do |key, value|
 	begin
-		r = site.positions.where(query:key).first
+		r = site.positions.where(query:key).first!
 		r.pos = value
 		r.save!
 	rescue
