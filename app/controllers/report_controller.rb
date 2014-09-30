@@ -7,13 +7,15 @@ class ReportController < ApplicationController
 	end
 	def initialize
 		super
-		@HX_ORDER = 1                        # Erreur d'ordonancement
-		@HX_DUPLICATE = 2                    # Duplicatat de balise <hx> sut le site
-		@HX_DIFF = 3                         # </h1> <h3> 
-		@PARSER = 4                        	 # Erreur de Nokogiri
-		@TITLE_DUPLICATE = 5				 # Duplicatat de titre
-		@IMG_NOALT = 6						 # Pas de alt sur une image
-		@TITLE_LENGTH = 7          			 # Titre trop long
+		@HX_ORDER 			= 1              # Erreur d'ordonancement
+		@HX_DUPLICATE 		= 2              # Duplicatat de balise <hx> sut le site
+		@HX_DIFF 			= 3              # </h1> <h3> 
+		@PARSER 			= 4            	 # Erreur de Nokogiri
+		@TITLE_DUPLICATE 	= 5				 # Duplicatat de titre
+		@IMG_NOALT 			= 6				 # Pas de alt sur une image
+		@TITLE_LENGTH 		= 7 			 # Titre trop long
+		@EXTERNAL_FOLLOW    = 8		         # Lien externe sans nofollow
+		@NO_HREF            = 9     	     # balise <a> sans href
 	end
 	def show
 		begin	

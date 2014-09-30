@@ -55,13 +55,34 @@ Compte rendu détaillé : <br /><br />
 	<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %> <font color="red"> 
 		<%= p.seoerrors.where(code: @IMG_NOALT).count %>
 		<% p.seoerrors.where(code: @IMG_NOALT).each do |i| %>
-		 <li> <%= i.desc %> </li>
+		 	<li> <%= i.desc %> </li>
 		 <%end%>
 	 	</font>
 	<% else %>
 		<font color="green">0</font><br />
 	<% end %>
 	<br />
+	Liens sans nofollow : 
+	<% if p.seoerrors.where(code: @EXTERNAL_FOLLOW).count > 0 %> <font color="red"> 
+		<%= p.seoerrors.where(code: @EXTERNAL_FOLLOW).count %>
+		<% p.seoerrors.where(code: @EXTERNAL_FOLLOW).each do |i| %>
+		 	<li> <%= i.desc %> </li>
+		 <%end%>
+	 	</font>
+	<% else %>
+		<font color="green">0</font><br />
+	<% end %>
+	<br />
+	Balise "a" sans href : 
+	<% if p.seoerrors.where(code: @NO_HREF).count > 0 %> <font color="red"> 
+		<%= p.seoerrors.where(code: @NO_HREF).count %>
+		<% p.seoerrors.where(code: @NO_HREF).each do |i| %>
+		 	<li> <%= i.desc %> </li>
+		 <%end%>
+	 	</font>
+	<% else %>
+		<font color="green">0</font><br />
+	<% end %>
 	<br />
 	Erreurs HTML : 
 	<% if p.seoerrors.where(code: @PARSER).count > 0 %> <font color="red"> 
@@ -69,14 +90,19 @@ Compte rendu détaillé : <br /><br />
 	<% end %>
 	</center><br/>
 	<%  p.seoerrors.where(code: @PARSER).each do |e| %>
-	<li>	<%= e.desc %>  ligne <%= e.line %></li>
+		<li>
+			<%= e.desc %>ligne <%= e.line %>
+		</li>
 	<% end %>
 	</font>
+	<br />
 	Title Dupliqué : 
 	<% if p.seoerrors.where(code: @TITLE_DUPLICATE).count > 0 %> <font color="red"> 
 		<%= p.seoerrors.where(code: @TITLE_DUPLICATE).count %>
 		<% p.seoerrors.where(code: @TITLE_DUPLICATE).each do |i| %>
-		 <li> <%= i.desc %> </li>
+		 <li>
+		 	<%= i.desc %>
+		 </li>
 		 <%end%>
 	<% else %>
 		0
