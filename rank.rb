@@ -28,10 +28,9 @@ def googlePos(url, keyw)
 		res[k] = -1
 		puts "Searching for #{k}"
 		Google::Search::Web.new(:query => k, :language => :fr).each_with_index do |q, i|
-			puts q.inspect
 			if URI.parse(coder.decode(q.visible_uri)).host.include? url.host
 				puts "Query : #{k} | Position : #{i + 1}"
-				res[k] = (i + 1) * q.page
+				res[k] = (i + 1)
 				break
 			end
 		end
