@@ -122,7 +122,7 @@ def runPage(page, site)
             next
           end
           dst = URI.parse(a["href"])
-          if dst.host != hst  && (!a["rel"] || !a["rel"].include?("nofollow"))
+          if dst.host.to_s != hst.to_s  && (!a["rel"] || !a["rel"].include?("nofollow"))
             p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
         end
@@ -176,13 +176,17 @@ Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => tru
     end 
   end
   pb = ProgressBar.create(:total => datas.count, :format => '%a %B %p%% %t')
-  datas.each do |d| 
+  datas.each do |d|
     runPage(d, site)
     pb.increment
   end
-  dupCheck = site.titles.all.uniq!
-  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}   
-  dupCheck = site.hxes.all.uniq! {|l| l.content}
+  #dupCheck = site.hxes.detect {|e| site.hxes.count {|c| c.content.to_s == e.content.to_s } > 1}
+  #  site.titles.each { |title| dupCheck += site.titles.select {|t| site.titles.count {|c| c.content.to_s == title.content.to_s} > 1} }
+  #dupCheck = site.titles.all.uniq!
+#  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}   
+ #dupCheck = []
+  #site.hxes.each { |hx| dupCheck += site.hxes.select { |c|site.hxes.count {|c| c.content.to_s == hx.content.to_s} > 1} }
+  dupCheck = site.hxes - site.hxes.uniq! {|l| l.content}
   dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}
   idx = 0
   SitemapGenerator::Sitemap.create do
@@ -194,6 +198,8 @@ Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => tru
   site.sitemap.delete unless site.sitemap.nil?
   site.sitemap = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s + ".xml", site_id:site.id)
   site.save
+  
+  
 end
 puts "Done."
 open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'r') {|f| @fData = f.read}
