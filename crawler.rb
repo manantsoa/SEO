@@ -85,7 +85,7 @@ def runPage(page, site)
         # Erreurs HTML
         doc.errors.each do |e|
           unless ["Tag video invalid", "Tag source invalid", "Tag marquee invalid", "Namespace prefix gcse is not defined", "Tag gcse:search invalid", "Tag gcse:searchbox-only invalid", "Tag nav invalid"].include?(e.to_s)
-            p.seoerrors.create(code: PARSER, desc: e.to_s, line:e.line, page_id:p.id, site_id: p.site.id)
+            p.seoerrors.create(code: PARSER, desc: e.to_s.force_encoding("utf-8"), line:e.line, page_id:p.id, site_id: p.site.id)
           end
         end
         # Hx
@@ -112,18 +112,18 @@ def runPage(page, site)
         # Title
         doc.css("title").each do |t|
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
-          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
+          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
         end
 
         hst = URI.parse(site.url).host
         doc.css("a").each do |a|
           if a["href"].nil?
-            p.seoerrors.create(code:NO_HREF, line:a.line, desc:a.content.to_s, page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:NO_HREF, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
             next
           end
           dst = URI.parse(a["href"])
           if dst.host != hst  && (!a["rel"] || !a["rel"].include?("nofollow"))
-            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a.content.to_s, page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
         end
            # Images
@@ -139,7 +139,7 @@ def runPage(page, site)
               dt = nil
             end
             tmp.append({:loc => i[:src], :title => i[:alt], :caption => dt})
-            p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s, page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
+            p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
           end
         end
         $images << tmp
@@ -169,8 +169,8 @@ pages = []
 $images = []
 Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
   anemone.on_every_page do |page|
-    if page.html? && page.code.to_i == 200
-      pages << page.url unless page.url == site.url
+    if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
+      pages << page.url
       datas << page
  	    end #ahah
     end 
@@ -181,9 +181,9 @@ Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => tru
     pb.increment
   end
   dupCheck = site.titles.all.uniq!
-  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}   
+  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}   
   dupCheck = site.hxes.all.uniq! {|l| l.content}
-  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content)}
+  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}
   idx = 0
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
