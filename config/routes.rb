@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   # root 'welcome#index'
 
 root 'pages#index'
-match '/report/:id/:pid', :to => 'report#bypage' , :constraints => { :id => /\d/ }  , via:[:get]
+match '/report/:id/:pid', :to => 'report#bypage' , :constraints => { :id => /[0-9]+(\%7C[0-9]+)*/ }   , via:[:get]
 match '/test'          , :to => 'report#test'                                    , via:[:get]
 match '/report/:id/hx' , :to => 'report#hx'                                      , via:[:get]
 match '/crawler'       , :to => 'pages#configCrawler'                            , via:[:get]
@@ -16,9 +16,7 @@ match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites              
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
 match '/crawler/:id'       , :to => 'pages#recrawl'                            , via:[:get]
 match '/report/ranks/:id'       , :to => 'report#ranks'                            , via:[:get]
-match '/report/ranks/:id'       , :to => 'report#ranks_add'                            , via:[:post]
-#match '/report/:id'
- 
+match '/report/ranks/:id'       , :to => 'report#ranks_add'                            , via:[:post] 
 
 
 
