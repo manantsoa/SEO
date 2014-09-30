@@ -25,6 +25,8 @@ PARSER               = 4          # Erreur de Nokogiri
 TITLE_DUPLICATE      = 5          # Duplicatat de titre
 IMG_NOALT            = 6          # Pas de alt sur une image
 TITLE_LENGTH         = 7          # Titre trop long
+EXTERNAL_FOLLOW      = 8          # Lien externe sans nofollow
+NO_HREF              = 9          # balise <a> sans href
 
 # Connexion Database
 y = YAML.load_file('./config/database.yml')["development"]
@@ -111,6 +113,17 @@ def runPage(page, site)
         doc.css("title").each do |t|
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
           p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s, page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
+        end
+        hst = URI.parse(site.url).host
+        doc.css("a").each do |a|
+          if a["href"].nil?
+            p.seoerrors.create(code:NO_HREF, line:a.line, desc:a.content.to_s, page_id:p.id, site_id:p.site_id)
+            next
+          end
+          dst = URI.parse(a["href"])
+          if dst.host != hst  && (!a["rel"] || !a["rel"].include?("nofollow"))
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a.content.to_s, page_id:p.id, site_id:p.site_id)
+          end
         end
            # Images
            tmp = []
