@@ -1,3 +1,3 @@
 class Position < ActiveRecord::Base
-	belongs_to :site
+	belongs_to :query
 end

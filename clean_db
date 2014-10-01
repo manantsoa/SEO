@@ -5,3 +5,4 @@ Position.delete_all
 Hx.delete_all
 Sitemap.delete_all
 Page.delete_all
+Query.delete_all
