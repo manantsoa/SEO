@@ -12,20 +12,11 @@
 
 Id : <%= @site.id %><br />
 Url : <%= @site.url %><br />
+<br />
 
-<div id ="bypage_balises">
-<% if @ranks.count == 0 %>
-	Aucunes position enregistré
-<% end %>
-<% @ranks.each do |p| %>
-	<% if p.pos == -1 %>
-		Requete : <%= p.query %> => Pos : <font color="red">>100</font><br />
-	<% else %>
-		Requete : <%= p.query %> => Pos : <%= p.pos %><br />
-	<% end %>
-<% end %>
+<div id="img_print_ranks">
+	<%= link_to "", "/report/ranks/" + @site.id.to_s + "/export", method: :get %>
 </div>
-
 
 <br /><br /><br /><br />
 <%= form_tag("", method: "post") do %>
@@ -35,3 +26,40 @@ Url : <%= @site.url %><br />
   <% hidden_field_tag(:id, @site.id) %>
   <%= submit_tag("Add") %>
 <% end %>
+
+<div id ="rang_balises">
+	<% if @ranks.count == 0 %>
+		Aucunes position enregistré
+	<% else %>
+	<table border="1">
+		<tr>
+			<td><center>Requete</center></td>
+			<td><center>Rang</center></td>
+		</tr>
+		<% @ranks.each do |p| %>
+				<tr>
+					<% if p.pos == -1 %>
+						<td>
+							<div id="img_delete_ranks">
+								<%= link_to "", "" + p.id.to_s, method: :delete %>
+							</div>
+							<%= p.query %>
+						</td>
+						<td>
+							<font color="red">>100</font>
+						</td>
+					<% else %>
+						<td>
+							<div id="img_delete_ranks">
+								<%= link_to "", "" + p.id.to_s, method: :delete %>
+							</div>
+							<%= p.query %>
+						</td>
+						<td><%= p.pos %></td>
+					<% end %>
+				</tr>
+		<% end %>
+	</table>
+	<% end %>
+</div>
+
