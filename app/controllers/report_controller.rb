@@ -16,6 +16,7 @@ class ReportController < ApplicationController
 		@TITLE_LENGTH 		= 7 			 # Titre trop long
 		@EXTERNAL_FOLLOW    = 8		         # Lien externe sans nofollow
 		@NO_HREF            = 9     	     # balise <a> sans href
+		@BAD_LINK           = 10         	 # Lien mal formé qui fait planter le parseur uri
 	end
 	def show
 		begin	
