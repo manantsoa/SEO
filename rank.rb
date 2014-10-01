@@ -11,11 +11,17 @@ y = YAML.load_file('./config/database.yml')["development"]
 ActiveRecord::Base.establish_connection(y)
 
 class Site < ActiveRecord::Base
-	has_many :positions, :dependent => :destroy
+	has_many :queries, :dependent => :destroy
+
 end
 
 class Position < ActiveRecord::Base
+	belongs_to :query
+end
+
+class Query < ActiveRecord::Base
 	belongs_to :site
+	has_many :positions, :dependent => :destroy
 end
 
 def googlePos(url, keyw)
@@ -50,10 +56,9 @@ rescue
 end
 googlePos(site.url, keyw).each do |key, value|
 	begin
-		r = site.positions.where(query:key).first!
-		r.pos = value
-		r.save!
+		q = site.queries.where(query:key).first!
 	rescue
-		r = site.positions.create(query:key, pos:value)
+		q = site.queries.create(query:key, site_id:ARGV[0].to_i)
 	end
+	q.positions.create(pos:value)
 end

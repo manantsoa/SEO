@@ -27,7 +27,7 @@ IMG_NOALT            = 6          # Pas de alt sur une image
 TITLE_LENGTH         = 7          # Titre trop long
 EXTERNAL_FOLLOW      = 8          # Lien externe sans nofollow
 NO_HREF              = 9          # balise <a> sans href
-
+BAD_LINK             = 10         # Lien mal formé qui fait planter le parseur uri
 # Connexion Database
 y = YAML.load_file('./config/database.yml')["development"]
 ActiveRecord::Base.establish_connection(y)
@@ -117,11 +117,16 @@ def runPage(page, site)
 
         hst = URI.parse(site.url).host
         doc.css("a").each do |a|
-          if a["href"].nil?
+          if a["href"].nil? or a["href"] == nil.to_s
             p.seoerrors.create(code:NO_HREF, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
             next
           end
-          dst = URI.parse(a["href"])
+          begin
+            dst = URI.parse(a["href"].to_s)
+          rescue
+            p.seoerrors.create(code:BAD_LINK, line:a.line, desc:a["href"].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+            next
+          end
           if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
             p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a[:url].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
