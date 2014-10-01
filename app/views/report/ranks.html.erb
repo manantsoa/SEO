@@ -18,6 +18,10 @@ Url : <%= @site.url %><br />
 	<%= link_to "", "/report/ranks/" + @site.id.to_s + "/export", method: :get %>
 </div>
 
+<div id="img_refresh_ranks">
+	<%= link_to "", "/report/ranks/" + @site.id.to_s, method: :patch %>
+</div>
+
 <br /><br /><br /><br />
 <%= form_tag("", method: "post") do %>
   <div id="area_ranks">
@@ -35,10 +39,12 @@ Url : <%= @site.url %><br />
 		<tr>
 			<td><center>Requete</center></td>
 			<td><center>Rang</center></td>
+			<td><center>Nb de recherches</center></td>
+			<td><center>Meilleur</center></td>
 		</tr>
 		<% @ranks.each do |p| %>
 				<tr>
-					<% if p.pos == -1 %>
+					<% if p.positions.last.pos == -1 %>
 						<td>
 							<div id="img_delete_ranks">
 								<%= link_to "", "" + p.id.to_s, method: :delete %>
@@ -46,7 +52,7 @@ Url : <%= @site.url %><br />
 							<%= p.query %>
 						</td>
 						<td>
-							<font color="red">>100</font>
+							<center><font color="red">>100</font></center>
 						</td>
 					<% else %>
 						<td>
@@ -55,8 +61,31 @@ Url : <%= @site.url %><br />
 							</div>
 							<%= p.query %>
 						</td>
-						<td><%= p.pos %></td>
+						<td>
+							<center>
+								<%= p.positions.last.pos %>
+								<% if p.positions.count(:pos) > 1 %>
+									<% pos_prev =  p.positions.limit(p.positions.count(:pos)).last.pos %>
+									<% pos_res = p.positions.last.pos - pos_prev %>
+									<% if pos_res >= 0 %>
+										<font color="green">+ <%= pos_res %></font>
+									<% else %>
+										<font color="red"><%= pos_res %></font>
+									<% end %>
+								<% end %>
+							</center>
+						</td>
 					<% end %>
+					<td>
+						<center><%= p.positions.count(:pos) %></center>
+					</td>
+					<td>
+						<% if p.positions.maximum(:pos) == -1 %>
+							<center><font color="red">Indisponible</font></center>
+						<% else %>
+							<center><%= p.positions.maximum(:pos) %></center>
+						<% end %>
+					</td>
 				</tr>
 		<% end %>
 	</table>

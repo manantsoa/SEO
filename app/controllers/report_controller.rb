@@ -37,7 +37,7 @@ class ReportController < ApplicationController
 	end
 	def ranks
 		@site = Site.find(params[:id])
-		@ranks = @site.positions
+		@ranks = @site.queries
 	end
 	def ranks_add
 		query = params[:q].chomp
@@ -48,7 +48,7 @@ class ReportController < ApplicationController
 		redirect_to :back
 	end
 	def ranks_destroy
-		Position.find(params[:id]).destroy
+		Query.find(params[:id]).destroy
 		redirect_to :back
 	end
 	def index
@@ -62,10 +62,22 @@ class ReportController < ApplicationController
 	def ranks_textfile
 		site = Site.find(params[:id])
 		get_content = ""
-		site.positions.each do |t|
+		site.queries.each do |t|
 			get_content = get_content + t.query + "\r\n"
 		end
 		k_name = "export_keyword_" + site.id.to_s
 	  	send_data get_content,:type => 'text',:disposition => "attachment; filename=#{k_name}"
+	end
+	def ranks_update
+		site = Site.find(params[:id])
+		id = params[:id]
+		update_content = ""
+		site.queries.each do |t|
+			update_content = update_content + " \"" + t.query + "\""
+		end
+		puts update_content
+		puts id.to_s
+		spawn("ruby rank.rb " + id.to_s + update_content)
+		redirect_to :back
 	end
 end

@@ -373,3 +373,13 @@ td {
 	position: absolute;
 	margin-top: 0px;
 }
+
+#img_refresh_ranks a{
+	background:url(Button_Refresh.png) no-repeat;
+	width:40px;
+	height:40px;
+	margin-left: 50px;
+	background-size: 100% 100%;
+	position: absolute;
+	margin-top: 0px;
+}

@@ -62,3 +62,4 @@ googlePos(site.url, keyw).each do |key, value|
 	end
 	q.positions.create(pos:value)
 end
+print "done"

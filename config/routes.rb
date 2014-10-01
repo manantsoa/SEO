@@ -19,8 +19,8 @@ match '/report/ranks/:id'       , :to => 'report#ranks'                         
 match '/report/ranks/:id'       , :to => 'report#ranks_add'                      , via:[:post] 
 match '/report/ranks/:id'       , :to => 'report#ranks_destroy'                  , via:[:delete]
 match '/report/ranks/:id/export', :to => 'report#ranks_textfile'                 , via:[:get] 
+match '/report/ranks/:id', :to => 'report#ranks_update'                 , via:[:patch] 
 match '/report'       , :to => 'report#index', :as => :list                      , via:[:get]
-
 
 
   # Example of regular route:
