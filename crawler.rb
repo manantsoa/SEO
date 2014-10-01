@@ -122,8 +122,8 @@ def runPage(page, site)
             next
           end
           dst = URI.parse(a["href"])
-          if dst.host != hst  && (!a["rel"] || !a["rel"].include?("nofollow"))
-            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+          if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a[:url].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
         end
            # Images
@@ -167,24 +167,43 @@ mArgv.each do |url|
 end
 pages = []
 $images = []
-Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => true) do |anemone|
+puts "Crawling #{site.url}"
+crawlPb = ProgressBar.create(:total => nil,
+                    :format         => '%a %bC%i %p%% %t',
+                    :progress_mark  => ' ',
+                    :remainder_mark => 'o')
+Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => true) do |anemone|
   anemone.on_every_page do |page|
     if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
+      crawlPb.increment
       pages << page.url
       datas << page
  	    end #ahah
     end 
   end
-  pb = ProgressBar.create(:total => datas.count, :format => '%a %B %p%% %t')
-  datas.each do |d| 
+  crawlPb.refresh
+  crawlPb.stop
+  puts "Crawl over on #{pages.size} pages. Filling database."
+  pb = ProgressBar.create(:total    => datas.count,
+                    :format         => '%a %bC%i %p%% %t',
+                    :progress_mark  => ' ',
+                    :remainder_mark => 'o')
+  datas.each do |d|
     runPage(d, site)
     pb.increment
   end
-  dupCheck = site.titles.all.uniq!
-  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}   
-  dupCheck = site.hxes.all.uniq! {|l| l.content}
-  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}
+  pb.refresh
+  pb.finish
+  #dupCheck = site.hxes.detect {|e| site.hxes.count {|c| c.content.to_s == e.content.to_s } > 1}
+  #  site.titles.each { |title| dupCheck += site.titles.select {|t| site.titles.count {|c| c.content.to_s == title.content.to_s} > 1} }
+  #dupCheck = site.titles.all.uniq!
+#  dupCheck.each { |e| e.page.seoerrors.create(code:TITLE_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: e.content.force_encoding("utf-8"))}   
+ #dupCheck = []
+  #site.hxes.each { |hx| dupCheck += site.hxes.select { |c|site.hxes.count {|c| c.content.to_s == hx.content.to_s} > 1} }
+  dupCheck = site.hxes - site.hxes.uniq! {|l| l.content}
+  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: "[ Duplique ] " + e.content.force_encoding("utf-8"))}
   idx = 0
+  puts 'Generating Sitemap'
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
       add p.path.to_s, :changefreq => 'daily', :priority => 0.5, :images => $images[idx] 
@@ -194,6 +213,8 @@ Anemone.crawl(site.url, :threads => 8, :verbose => true, :obey_robots_txt => tru
   site.sitemap.delete unless site.sitemap.nil?
   site.sitemap = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s + ".xml", site_id:site.id)
   site.save
+  
+  
 end
 puts "Done."
 open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'r') {|f| @fData = f.read}

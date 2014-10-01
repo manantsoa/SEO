@@ -44,7 +44,7 @@ Compte rendu détaillé : <br /><br />
 		Title trop long<br />
 		<% p.seoerrors.where(code: @TITLE_LENGTH).each do |i| %>
 		 Taille : <%= i.desc.length %> caractères<br />
-		 <%= i.desc %><br />
+		 <%= i.desc.force_encoding('UTF-8') %><br />
 		 <%end%>
 	 	</font>
 	<% else %>
@@ -55,7 +55,7 @@ Compte rendu détaillé : <br /><br />
 	<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %> <font color="red"> 
 		<%= p.seoerrors.where(code: @IMG_NOALT).count %>
 		<% p.seoerrors.where(code: @IMG_NOALT).each do |i| %>
-		 	<li> <%= i.desc %> </li>
+		 <li> <%= i.desc.force_encoding('UTF-8') %> </li>
 		 <%end%>
 	 	</font>
 	<% else %>
@@ -90,9 +90,7 @@ Compte rendu détaillé : <br /><br />
 	<% end %>
 	</center><br/>
 	<%  p.seoerrors.where(code: @PARSER).each do |e| %>
-		<li>
-			<%= e.desc %>ligne <%= e.line %>
-		</li>
+	<li>	<%= e.desc.force_encoding('UTF-8') %>  ligne <%= e.line %></li>
 	<% end %>
 	</font>
 	<br />
@@ -100,9 +98,7 @@ Compte rendu détaillé : <br /><br />
 	<% if p.seoerrors.where(code: @TITLE_DUPLICATE).count > 0 %> <font color="red"> 
 		<%= p.seoerrors.where(code: @TITLE_DUPLICATE).count %>
 		<% p.seoerrors.where(code: @TITLE_DUPLICATE).each do |i| %>
-		 <li>
-		 	<%= i.desc %>
-		 </li>
+		 <li> <%= i.desc.force_encoding('UTF-8') %> </li>
 		 <%end%>
 	<% else %>
 		0
