@@ -45,7 +45,7 @@ class ReportController < ApplicationController
 		id = params[:id]
 		query.gsub! "\r\n", "\" \""
 		spawn("ruby rank.rb " + id.to_s + " \"" + query.to_s + "\"")
-		redirect_to root_path
+		redirect_to :back
 	end
 	def ranks_destroy
 		Position.find(params[:id]).destroy
@@ -58,11 +58,14 @@ class ReportController < ApplicationController
 		Site.find(params[:id]).destroy
 		redirect_to :back
 	end
-	@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
+	#@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
 	def ranks_textfile
 		site = Site.find(params[:id])
 		get_content = ""
-	  	@content = get_content
-	  	send_data @content,:type => 'text',:disposition => "attachment; filename=file_name.txt"
+		site.positions.each do |t|
+			get_content = get_content + t.query + "\r\n"
+		end
+		k_name = "export_keyword_" + site.id.to_s
+	  	send_data get_content,:type => 'text',:disposition => "attachment; filename=#{k_name}"
 	end
 end
