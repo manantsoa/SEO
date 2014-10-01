@@ -47,11 +47,22 @@ class ReportController < ApplicationController
 		spawn("ruby rank.rb " + id.to_s + " \"" + query.to_s + "\"")
 		redirect_to root_path
 	end
+	def ranks_destroy
+		Position.find(params[:id]).destroy
+		redirect_to :back
+	end
 	def index
 		@sites = Site.all
 	end
 	def destroy
 		Site.find(params[:id]).destroy
-		redirect_to report_index_path
+		redirect_to :back
+	end
+	@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
+	def ranks_textfile
+		site = Site.find(params[:id])
+		get_content = ""
+	  	@content = get_content
+	  	send_data @content,:type => 'text',:disposition => "attachment; filename=file_name.txt"
 	end
 end

@@ -20,6 +20,7 @@ body{
 li{
 	list-style-type: none;
 }
+
 a:link { 
  text-decoration:none; 
 }
@@ -29,6 +30,7 @@ h1{
 	font-size:3.8em;
 	text-align: center;
 }
+
 #report_index_link{
 	margin-top: 150px;
 }
@@ -94,7 +96,7 @@ h1{
 }
 
 #Menu li{
-opacity:0.0;
+	opacity:0.0;
 /*animation-name*/
 -webkit-animation-name:Autosee;
    -moz-animation-name:Autosee;
@@ -111,15 +113,15 @@ opacity:0.0;
 -webkit-animation-fill-mode:forwards;
 -moz-animation-timing-fonction:easa-in-out;
 -moz-animation-fill-mode:forwards;
-text-decoration: none;
-background:rgba(0, 0, 7, 0.8);
-border-top: 2px solid white;
-margin-top:0px;
-text-align:center;
-margin-bottom: 10px;
-padding-top:40px;
-height:55px;
-width : 98%;
+	text-decoration: none;
+	background:rgba(0, 0, 7, 0.8);
+	border-top: 2px solid white;
+	margin-top:0px;
+	text-align:center;
+	margin-bottom: 10px;
+	padding-top:40px;
+	height:55px;
+	width : 98%;
 /*transition-property*/
 -webkit-transition-property:all;
    -moz-transition-property:all;
@@ -137,16 +139,16 @@ width : 98%;
         transition-duration:0.5s;
 }
 #Menu li:hover{
-background:rgba(20, 60, 80, 0.8);
+	background:rgba(20, 60, 80, 0.8);
 }
-#Menu li a{
 
-font-size:1.4em;
-color: #FFFCEC;
+#Menu li a{
+	font-size:1.4em;
+	color: #FFFCEC;
 }
 
 #Menu-top{
-opacity:0.0;
+	opacity:0.0;
 /*animation-name*/
 -webkit-animation-name:Autosee;
    -moz-animation-name:Autosee;
@@ -163,24 +165,25 @@ opacity:0.0;
 -webkit-animation-fill-mode:forwards;
 -moz-animation-timing-fonction:easa-in-out;
 -moz-animation-fill-mode:forwards;
-width:100%%;
-height:100px;
-background:rgba(0, 0, 7, 0.8);
-position:relative;
-border-top:1px solid #0051cc;
-border-bottom:1px solid #0051cc;
+	width:100%%;
+	height:100px;
+	background:rgba(0, 0, 7, 0.8);
+	position:relative;
+	border-top:1px solid #0051cc;
+	border-bottom:1px solid #0051cc;
 }
 #Menu-top ul{
-margin-top:0px;
-text-align:left;
+	margin-top:0px;
+	text-align:left;
 }
+
 #Menu-top li{
-display:inline-block;
-padding:5px;
-padding-right:25px;
-padding-left:25px;
-padding-top:40px;
-height:55px;
+	display:inline-block;
+	padding:5px;
+	padding-right:25px;
+	padding-left:25px;
+	padding-top:40px;
+	height:55px;
 /*transition-property*/
 -webkit-transition-property:all;
    -moz-transition-property:all;
@@ -198,22 +201,27 @@ height:55px;
         transition-duration:0.5s;
 }
 #Menu-top li:hover{
-background:rgba(20, 60, 80, 0.8);
+	background:rgba(20, 60, 80, 0.8);
 }
+
 #Menu-top  li a{
-font-size:1.4em;
-color:white;
+	font-size:1.4em;
+	color:white;
 }
+
 #txt{
 	margin-left: 20px;
 }
+
 #bypage_error{
 	width: 48%;
 }
+
 #Menu-top-li{
 	display:initial;
 	margin-left:35%;
 }
+
 #linkbypage{
 	margin-bottom: 30px;
 	margin-top: 30px;
@@ -221,6 +229,7 @@ color:white;
 	height: 50px;
 	position: relative;
 }
+
 #img_delete_report a{
 	background:url(bouton-supprimer-rouge-icone-4522-48.png) no-repeat;
 	width:25px;
@@ -273,6 +282,7 @@ color:white;
 {
 	width: 900px;
 }
+
 #error_show
 {
 	margin-left: 1000px;
@@ -285,23 +295,27 @@ color:white;
 	margin-bottom: 20px;
 	padding:10px;
 }
+
 #error_show_hx
 {
 	width:150px;
 	position:absolute;
 }
+
 #error_show_noalt
 {
 	width:150px;
 	position:absolute;
 	margin-left: 150px;
 }
+
 #error_show_titlesize
 {
 	width:150px;
 	position:absolute;
 	margin-left: 300px;
 }
+
 #error_show_html
 {
 	width:150px;
@@ -312,4 +326,50 @@ color:white;
 #area_ranks textarea{
 	width: 600px;
 	height : 300px;
+	position:relative;
+}
+
+#pos{
+	margin-left: 100px;
+}
+
+#rang2_balises{
+	padding: 10px;
+	left:70%;
+	position:absolute;
+	display:initial;
+	border:solid 1px black;
+	top:0px;
+}
+
+#rang_balises{
+	top:200px;
+	padding: 10px;
+	left:50%;
+	position:absolute;
+	display:initial;
+	width: 600px;
+}
+
+td {
+    padding: 10px;
+}
+
+#img_delete_ranks a{
+	background:url(bouton-supprimer-rouge-icone-4522-48.png) no-repeat;
+	width:20px;
+	height:20px;
+	background-size: 100% 100%;
+	margin-left: -22px;
+	position: absolute;
+	margin-top: 0px;
+}
+
+#img_print_ranks a{
+	background:url(export.png) no-repeat;
+	width:40px;
+	height:40px;
+	background-size: 100% 100%;
+	position: absolute;
+	margin-top: 0px;
 }

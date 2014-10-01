@@ -14,10 +14,13 @@ match '/report/:id/hx' , :to => 'report#hx'                                     
 match '/crawler'       , :to => 'pages#configCrawler'                            , via:[:get]
 match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites               , via:[:post]
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
-match '/crawler/:id'       , :to => 'pages#recrawl'                            , via:[:get]
+match '/crawler/:id'       , :to => 'pages#recrawl'                              , via:[:get]
 match '/report/ranks/:id'       , :to => 'report#ranks'                          , via:[:get]
 match '/report/ranks/:id'       , :to => 'report#ranks_add'                      , via:[:post] 
-match '/report'       , :to => 'report#index', :as => :list                     , via:[:get]
+match '/report/ranks/:id'       , :to => 'report#ranks_destroy'                  , via:[:delete]
+match '/report/ranks/:id/export', :to => 'report#ranks_textfile'                 , via:[:get] 
+match '/report'       , :to => 'report#index', :as => :list                      , via:[:get]
+
 
 
   # Example of regular route:
