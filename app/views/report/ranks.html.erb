@@ -65,8 +65,8 @@ Url : <%= @site.url %><br />
 							<center>
 								<%= p.positions.last.pos %>
 								<% if p.positions.count(:pos) > 1 %>
-									<% pos_prev =  p.positions.limit(p.positions.count(:pos)).last.pos %>
-									<% pos_res = p.positions.last.pos - pos_prev %>
+									<% pos_prev =  p.positions.limit(p.positions.count(:pos) - 1).last.pos %>
+									<% pos_res = pos_prev - p.positions.last.pos %>
 									<% if pos_res >= 0 %>
 										<font color="green">+ <%= pos_res %></font>
 									<% else %>
@@ -80,10 +80,10 @@ Url : <%= @site.url %><br />
 						<center><%= p.positions.count(:pos) %></center>
 					</td>
 					<td>
-						<% if p.positions.maximum(:pos) == -1 %>
+						<% if p.positions.minimum(:pos) == -1 %>
 							<center><font color="red">Indisponible</font></center>
 						<% else %>
-							<center><%= p.positions.maximum(:pos) %></center>
+							<center><%= p.positions.minimum(:pos) %></center>
 						<% end %>
 					</td>
 				</tr>
