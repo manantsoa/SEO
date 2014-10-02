@@ -353,6 +353,7 @@ h1{
 
 td {
     padding: 10px;
+    background-color: white;
 }
 
 #img_delete_ranks a{
@@ -383,3 +384,4 @@ td {
 	position: absolute;
 	margin-top: 0px;
 }
+
