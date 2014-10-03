@@ -128,7 +128,7 @@ def runPage(page, site)
             next
           end
           if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
-            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a[:url].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a["href"].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
         end
            # Images
