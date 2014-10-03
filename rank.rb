@@ -31,7 +31,7 @@ def googlePos(url, keyw)
 	coder = HTMLEntities.new
 
 	keyw.each do |k|
-		res[k] = -1
+		res[k] = 10000
 		puts "Searching for #{k}"
 		Google::Search::Web.new(:query => k, :language => :fr, :gl => 'FR').each_with_index do |q, i|
 			#puts "#{q.visible_uri} | #{q.index}"
