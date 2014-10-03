@@ -1,0 +1,14 @@
+<% content_for :head do %>
+<div id="Menu-top">
+	<ul>
+		<div id="Menu-top-li">
+			<li><%= link_to "Liste des rapports", list_path %></li>
+			<li><%= link_to "Index", root_path %></li>
+			<li><%= link_to "Ajouter un site", crawler_path %></li>
+			<li><%= link_to "Retour", "../" + @keyword.id.to_s %></li>
+		</div>
+	</ul>
+</div>
+<% end %>
+
+<%= high_chart("some_id", @chart) %>

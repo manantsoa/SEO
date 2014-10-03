@@ -22,6 +22,10 @@ Url : <%= @site.url %><br />
 	<%= link_to "", "/report/ranks/" + @site.id.to_s, method: :patch %>
 </div>
 
+<div id="img_csv_ranks">
+	<%= link_to "", "/report/ranks/" + @site.id.to_s + "/csv", format: "xls", method: :get %>
+</div>
+
 <br /><br /><br /><br />
 <%= form_tag("", method: "post") do %>
   <div id="area_ranks">
@@ -35,7 +39,7 @@ Url : <%= @site.url %><br />
 	<% if @ranks.count == 0 %>
 		Aucunes position enregistré
 	<% else %>
-	<table border="1">
+	<table border="1" width="800">
 		<tr>
 			<td><center>Requete</center></td>
 			<td><center>Rang</center></td>
@@ -49,7 +53,7 @@ Url : <%= @site.url %><br />
 							<div id="img_delete_ranks">
 								<%= link_to "", "" + p.id.to_s, method: :delete %>
 							</div>
-							<%= p.query %>
+							<%= link_to p.query, "./" + @site.id.to_s + "/" + p.id.to_s %>
 						</td>
 						<td>
 							<center><font color="red">>100</font></center>
@@ -59,7 +63,7 @@ Url : <%= @site.url %><br />
 							<div id="img_delete_ranks">
 								<%= link_to "", "" + p.id.to_s, method: :delete %>
 							</div>
-							<%= p.query %>
+							<%= link_to p.query, "./" + @site.id.to_s + "/" + p.id.to_s%>
 						</td>
 						<td>
 							<center>
@@ -70,7 +74,9 @@ Url : <%= @site.url %><br />
 									<% if pos_res >= 0 %>
 										<font color="green">+ <%= pos_res %></font>
 									<% else %>
+										<% if pos_res + pos_prev > 0 %>
 										<font color="red"><%= pos_res %></font>
+										<% end %>
 									<% end %>
 								<% end %>
 							</center>
@@ -91,4 +97,3 @@ Url : <%= @site.url %><br />
 	</table>
 	<% end %>
 </div>
-
