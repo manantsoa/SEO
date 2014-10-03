@@ -84,7 +84,7 @@ def runPage(page, site)
         #threads << Thread.new {spawn("ruby errors.rb")}
         # Erreurs HTML
         doc.errors.each do |e|
-          unless ["Tag video invalid", "Tag source invalid", "Tag marquee invalid", "Namespace prefix gcse is not defined", "Tag gcse:search invalid", "Tag gcse:searchbox-only invalid", "Tag nav invalid"].include?(e.to_s)
+          unless ["htmlParseEntityRef: expecting ';'", "Tag video invalid", "Tag source invalid", "Tag marquee invalid", "Namespace prefix gcse is not defined", "Tag gcse:search invalid", "Tag gcse:searchbox-only invalid", "Tag nav invalid"].include?(e.to_s)
             p.seoerrors.create(code: PARSER, desc: e.to_s.force_encoding("utf-8"), line:e.line, page_id:p.id, site_id: p.site.id)
           end
         end
@@ -128,7 +128,7 @@ def runPage(page, site)
             next
           end
           if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
-            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a[:url].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a["href"].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
           end
         end
            # Images
