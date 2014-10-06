@@ -6,6 +6,7 @@ require 'active_record'
 require 'openssl'
 require 'htmlentities'
 require 'nokogiri'
+
 DEPTH = 10
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 y = YAML.load_file('./config/database.yml')["development"]
@@ -13,7 +14,6 @@ ActiveRecord::Base.establish_connection(y)
 
 class Site < ActiveRecord::Base
 	has_many :queries, :dependent => :destroy
-
 end
 
 class Position < ActiveRecord::Base
@@ -67,11 +67,10 @@ def googlePos(url, keyw)
 		qRes = [k, 10000, nil]
 		puts "Searching for #{k}"
 		Google::Search::Web.new(:query => k, :language => :fr, :gl => 'FR').each_with_index do |q, i|
-			#puts "#{q.visible_uri} | #{q.index}"
 			if URI.parse(coder.decode(q.uri)).host.include? url.host
 				puts "Query : #{k} | Position : #{i + 1}"
 				qRes[1] = (i + 1)
-				qRes[2] = q.uri
+				qRes[2] = q.url
 				res << qRes
 				break
 			end
@@ -90,6 +89,7 @@ rescue
 	exit(0)
 end
 googlePos(site.url, keyw).each do |key, value, url|
+	puts "#{key} #{value} #{url}"
 	begin
 		q = site.queries.where(query:key).first!
 	rescue
