@@ -1,3 +1,4 @@
+require 'csv'
 
 class ReportController < ApplicationController
 	def bypage
@@ -80,5 +81,38 @@ class ReportController < ApplicationController
 		puts id.to_s
 		spawn("ruby rank.rb " + id.to_s + update_content)
 		redirect_to :back
+	end
+	def ranks_csv
+   		site = Site.find(params[:id])
+  		keywords_csv = CSV.generate(:col_sep => "\t") do |csv|
+  			csv << [site.url]
+		    csv << ["Requete", "Rang", "Meilleur", "Date"]
+		 	site.queries.each do |key|
+		      csv << [key.query, key.positions.last.pos, key.positions.minimum(:pos), key.positions.last.updated_at.strftime("%Y-%m-%d")]
+		    end
+		  end
+		   
+		send_data keywords_csv, :type => 'text/xls', :filename => 'export.xls'
+	end
+	def chart
+		@keyword = Site.find(params[:id]).queries.all.where(id:params[:pid]).first
+		posi = []
+		date = []
+		@keyword.positions.each do |t| 
+			posi.push(t.pos)
+			date.push(t.created_at.to_time.strftime("%Y-%m-%d"))
+		end
+		@chart = LazyHighCharts::HighChart.new('graph') do |f|
+			f.title(:text => "Positionnement")
+			f.xAxis(:categories => date)
+			f.series(:name => "Positions", :yAxis => 0, :data => posi)
+
+			f.yAxis [
+			{:title => {:text => "positions", :margin => 70} },
+			]
+
+			f.legend(:align => 'right', :verticalAlign => 'top', :y => 75, :x => -50, :layout => 'vertical',)
+			f.chart({:defaultSeriesType=>"line"})
+		end
 	end
 end

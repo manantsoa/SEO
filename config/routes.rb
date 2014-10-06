@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   # root 'welcome#index'
 
 root 'pages#index'
-match '/report/:id/:pid', :to => 'report#bypage' , :constraints => { :id => /[0-9]+(\%7C[0-9]+)*/ }   , via:[:get]
+match '/report/:id/:pid', :to => 'report#bypage', :constraints => { :id => /[0-9]+(\%7C[0-9]+)*/ }   , via:[:get]
 match '/test'          , :to => 'report#test'                                    , via:[:get]
 match '/report/:id/hx' , :to => 'report#hx'                                      , via:[:get]
 match '/crawler'       , :to => 'pages#configCrawler'                            , via:[:get]
@@ -19,7 +19,9 @@ match '/report/ranks/:id'       , :to => 'report#ranks'                         
 match '/report/ranks/:id'       , :to => 'report#ranks_add'                      , via:[:post] 
 match '/report/ranks/:id'       , :to => 'report#ranks_destroy'                  , via:[:delete]
 match '/report/ranks/:id/export', :to => 'report#ranks_textfile'                 , via:[:get] 
+match '/report/ranks/:id/csv', :to => 'report#ranks_csv'                 , via:[:get] 
 match '/report/ranks/:id', :to => 'report#ranks_update'                 , via:[:patch] 
+match '/report/ranks/:id/:pid'       , :to => 'report#chart', :constraints => { :pid => /[0-9]+(\%7C[0-9]+)*/ }                         , via:[:get]
 match '/report'       , :to => 'report#index', :as => :list                      , via:[:get]
 
 
