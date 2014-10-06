@@ -394,3 +394,13 @@ td {
 	position: absolute;
 	margin-top: 0px;
 }
+
+#img_web_ranks a{
+	background:url(web.png) no-repeat;
+	width:25px;
+	height:25px;
+	margin-left: 380px;
+	background-size: 100% 100%;
+	position: absolute;
+	margin-top: -20px;
+}

@@ -5,7 +5,7 @@
 			<li><%= link_to "Liste des rapports", list_path %></li>
 			<li><%= link_to "Index", root_path %></li>
 			<li><%= link_to "Ajouter un site", crawler_path %></li>
-			<li><%= link_to "Retour", "../" + @keyword.id.to_s %></li>
+			<li><%= link_to "Retour", "../" + params[:id] %></li>
 		</div>
 	</ul>
 </div>
