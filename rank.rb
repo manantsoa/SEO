@@ -71,11 +71,11 @@ def googlePos(url, keyw)
 				puts "Query : #{k} | Position : #{i + 1}"
 				qRes[1] = (i + 1)
 				qRes[2] = q.uri
-				res << qRes
 				break
 			end
 		end
-	end
+		res << qRes
+ 	end
 	return res
 end
 
