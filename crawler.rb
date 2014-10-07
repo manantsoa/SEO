@@ -134,6 +134,9 @@ def runPage(page, site)
            # Images
            tmp = []
            doc.css("img").each do |i|
+            if i[:src].nil?
+              next
+            end
             u = site.url
             u = u[0..-2] if u[-1] == '/'
             i[:src] = u + i[:src][1..-1] if i[:src].to_s.start_with?("./")
