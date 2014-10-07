@@ -136,7 +136,7 @@ def runPage(page, site)
            doc.css("img").each do |i|
             u = site.url
             u = u[0..-2] if u[-1] == '/'
-            i[:src] = u + i[:src][1..-1] if i[:src].start_with?("./")
+            i[:src] = u + i[:src][1..-1] if i[:src].to_s.start_with?("./")
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
           if i[:src].end_with?(".jpeg") || i[:src].end_with?(".jpg")
             begin
