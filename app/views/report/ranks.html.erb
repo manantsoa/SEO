@@ -78,12 +78,12 @@ Url : <%= @site.url %><br />
 									<% pos_prev =  p.positions.limit(p.positions.count(:pos) - 1).last.pos %>
 									<% pos_res = pos_prev - p.positions.last.pos %>
 									<% if pos_res < 10000 %>
-										<font color="green">+ <%= pos_res %></font>
-									<% else %>
-										<% if pos_res == 0 %>
+										<% if pos_res < 0 %>
 											<font color="red">- <%= pos_res * -1 %></font>
 										<% else %>
-											<font color="green">+ <%= pos_res %></font>
+											<% if pos_res <= 1000 and pos_res != 0 %>
+												<font color="green">+ <%= pos_res %></font>
+											<% end %>
 										<% end %>
 									<% end %>
 								<% end %>
