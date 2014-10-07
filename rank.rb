@@ -70,7 +70,7 @@ def googlePos(url, keyw)
 			if URI.parse(coder.decode(q.uri)).host.include? url.host
 				puts "Query : #{k} | Position : #{i + 1}"
 				qRes[1] = (i + 1)
-				qRes[2] = q.url
+				qRes[2] = q.uri
 				res << qRes
 				break
 			end
