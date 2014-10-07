@@ -112,29 +112,31 @@ def runPage(page, site)
         # Title
         doc.css("title").each do |t|
           p.titles.create(content:t.content, line: t.line, page_id:p.id)
-          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
+          p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
         end
 
         hst = URI.parse(site.url).host
         doc.css("a").each do |a|
           if a["href"].nil? or a["href"] == nil.to_s
-            p.seoerrors.create(code:NO_HREF, line:a.line, desc:a.content.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:NO_HREF, line:a.line, desc:a.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site_id)
             next
           end
           begin
             dst = URI.parse(a["href"].to_s)
           rescue
-            p.seoerrors.create(code:BAD_LINK, line:a.line, desc:a["href"].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:BAD_LINK, line:a.line, desc:a["href"].to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site_id)
             next
           end
           if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
-            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a["href"].to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site_id)
+            p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a["href"].to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site_id)
           end
         end
            # Images
            tmp = []
            doc.css("img").each do |i|
-            i[:src] = site.url + i[:src][2..-1] if i[:src].start_with?("./")
+            u = site.url
+            u = u[0..-2] if u[-1] == '/'
+            i[:src] = u + i[:src][1..-1] if i[:src].start_with?("./")
           #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
           if i[:src].end_with?(".jpeg") || i[:src].end_with?(".jpg")
             begin
