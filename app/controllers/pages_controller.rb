@@ -20,4 +20,7 @@ class PagesController < ApplicationController
   def index
  	  @sites = Site.all
   end
+  def design
+    @sites = Site.all
+  end
 end

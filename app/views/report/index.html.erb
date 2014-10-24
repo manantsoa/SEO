@@ -14,13 +14,15 @@
 <% @sites.each do |s| %>
 	<div id="report_index_block">
 		<div id="img_delete_report">
-			<%= link_to "", "/report/" + s.id.to_s , method: :delete %>
+			<%= link_to "", "/report/" + s.id.to_s, method: :delete %>
 		</div>
 		<div id="img_refresh_report">
 			<%= link_to "", crawler_path + "/" + s.id.to_s %>
 		</div>
 		<div id="img_sitemap_report">
-			<% unless s.sitemap.nil? %><%= link_to "", "./" + s.sitemap.str.to_s , target: "_blank" %><% end %>
+			<% unless s.sitemap.nil? %>
+				<%= link_to "", "report/print/" + s.id.to_s, method: :get  %>
+			<% end %>
 		</div>
 			<div id="img_search_report">
 			<%= link_to "", list_path + "/ranks/" +  s.id.to_s %>

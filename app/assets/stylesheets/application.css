@@ -14,7 +14,9 @@
  *= require_self
  */
 body{
-	background:url(metal.png) repeat;
+	/*background:url(metal.png) repeat;*/
+	padding: 0px;
+	margin: 0px;
 }
 
 li{
@@ -399,8 +401,62 @@ td {
 	background:url(web.png) no-repeat;
 	width:25px;
 	height:25px;
-	margin-left: 380px;
+	margin-left: -50px;
 	background-size: 100% 100%;
 	position: absolute;
 	margin-top: -20px;
+}
+
+/*WEEEEEEEEEEEEEEEEEEEB */
+
+#design_header{
+	background-color: rgb(166,89,128);
+	width:100%;
+	height:100px;
+	position: fixed;
+	padding: 0px;
+}
+
+
+#li_design_header{
+	text-align: center;
+}
+
+#li_design_header li{
+	display: inline-block;
+	list-style-type: none;
+	margin-top: 10px;
+	margin-left: 50px;
+}
+
+#li_design_header a{
+	display: block;
+	padding: 10px;
+	padding-right: 30px;
+	padding-left: 30px;
+	color: white;
+	font-size: 150%;
+     -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+         -ms-transition: all 0.5s ease;
+          -o-transition: all 0.5s ease;
+             transition: all 0.5s ease;
+}
+
+#li_design_header a:hover{-
+	-webkit-box-shadow: 0px 3px 3px 3px #656565;
+	-moz-box-shadow: 0px 3px 3px 3px #656565;
+	-o-box-shadow: 0px 3px 3px 3px #656565;
+	box-shadow: 0px 3px 3px 3px #656565;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=180, Strength=3);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+#logo8{
+	background:url(win8.png) no-repeat;
+	height:200px;
+	width:400px;
+	background-size: 100% 100%;
+
 }

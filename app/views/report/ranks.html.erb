@@ -54,9 +54,6 @@ Url : <%= @site.url %><br />
 								<%= link_to "", "" + p.id.to_s, method: :delete %>
 							</div>
 							<%= link_to p.query, "./" + @site.id.to_s + "/" + p.id.to_s %>
-							<div id="img_web_ranks">
-								<%= link_to "", "https://www.google.fr/search?q=" + p.query.gsub(' ', '+').to_s, target: "_blank" %>
-							</div>
 						</td>
 						<td>
 							<center><font color="red">>100</font></center>

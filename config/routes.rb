@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 root 'pages#index'
 match '/report/:id/:pid', :to => 'report#bypage', :constraints => { :id => /[0-9]+(\%7C[0-9]+)*/ }   , via:[:get]
 match '/test'          , :to => 'report#test'                                    , via:[:get]
-match '/report/:id/hx' , :to => 'report#hx'                                      , via:[:get]
+match '/report/:id/hx' , :to => 'report#hx'   , :constraints => { :pid => /[0-9]+(\%7C[0-9]+)*/ }    , via:[:get]
 match '/crawler'       , :to => 'pages#configCrawler'                            , via:[:get]
 match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites               , via:[:post]
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
@@ -23,7 +23,8 @@ match '/report/ranks/:id/csv', :to => 'report#ranks_csv'                 , via:[
 match '/report/ranks/:id', :to => 'report#ranks_update'                 , via:[:patch] 
 match '/report/ranks/:id/:pid'       , :to => 'report#chart', :constraints => { :pid => /[0-9]+(\%7C[0-9]+)*/ }                         , via:[:get]
 match '/report'       , :to => 'report#index', :as => :list                      , via:[:get]
-
+match '/report/print/:id', :to => 'report#download'                                  , via:[:get]
+match '/report/test/design', :to => 'report#design', via:[:get]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

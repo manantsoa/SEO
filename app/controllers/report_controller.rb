@@ -1,6 +1,7 @@
 require 'csv'
 
 class ReportController < ApplicationController
+			IMAGES_PATH = File.join(Rails.root, "public")
 	def bypage
 #		p = Site.find(params[:id]).pages.all.where(id:params[:pid]).first
 		@Page = Site.find(params[:id]).pages.all.where(id:params[:pid]).all
@@ -52,6 +53,7 @@ class ReportController < ApplicationController
 	def ranks_destroy
 		Query.find(params[:id]).destroy
 		redirect_to :back
+		flash[:notice] = "Pouette"
 	end
 	def index
 		@sites = Site.all
@@ -114,5 +116,10 @@ class ReportController < ApplicationController
 			f.legend(:align => 'right', :verticalAlign => 'top', :y => 75, :x => -50, :layout => 'vertical',)
 			f.chart({:defaultSeriesType=>"line"})
 		end
+	end
+	def download
+		site = Site.find(params[:id])
+		data = open(IMAGES_PATH + "/toto.xml")
+		send_data data.read, type: 'application/xml', filename: "Pouette.xml"
 	end
 end
