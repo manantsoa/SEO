@@ -119,7 +119,7 @@ class ReportController < ApplicationController
 	end
 	def download
 		site = Site.find(params[:id])
-		data = open(IMAGES_PATH + "/toto.xml")
-		send_data data.read, type: 'application/xml', filename: "Pouette.xml"
+		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s)
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url
 	end
 end
