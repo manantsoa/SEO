@@ -194,13 +194,13 @@ mArgv.each do |url|
   Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => true) do |anemone|
     anemone.on_every_page do |page|
       if page.code.to_i == 404
-        httpErrors << page.url
+        $httpErrors << page.url
       end
       if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
         crawlPb.increment
         pages << page.url
         datas << page
-      end #ahah
+      end
     end
   end
   crawlPb.refresh
