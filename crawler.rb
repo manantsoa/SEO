@@ -176,6 +176,8 @@ mArgv.each do |url|
     site = Site.create
   end
   site.url = url
+  site.processing = true
+  site.save
   SitemapGenerator::Sitemap.default_host = url
   SitemapGenerator::Sitemap.filename = Time.now.to_i
   SitemapGenerator::Sitemap.compress = false
@@ -232,6 +234,7 @@ mArgv.each do |url|
   end
   site.sitemap.delete unless site.sitemap.nil?
   site.sitemap = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s + ".xml", site_id:site.id)
+  site.processing = false
   site.save
 end
 puts "Done."
