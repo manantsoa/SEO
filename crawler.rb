@@ -29,6 +29,8 @@ TITLE_LENGTH         = 7          # Titre trop long
 EXTERNAL_FOLLOW      = 8          # Lien externe sans nofollow
 NO_HREF              = 9          # balise <a> sans href
 BAD_LINK             = 10         # Lien mal formé qui fait planter le parseur uri
+DEAD_LINK            = 11         # Ein 404
+
 # Connexion Database
 y = YAML.load_file('./config/database.yml')["development"]
 ActiveRecord::Base.establish_connection(y)
@@ -84,6 +86,11 @@ def runPage(page, site)
   # threads << Thread.new {spawn("ruby img.rb")}
   #threads << Thread.new {spawn("ruby errors.rb")}
   # Erreurs HTML
+  $httpErrors.each do |badlink|
+    if page.body.include? badlink
+      p.seoerrors.create(code: DEAD_LINK, desc: badlink, site_id: p.site.id)
+    end
+  end
   doc.errors.each do |e|
     unless ["htmlParseEntityRef: expecting ';'", 'Tag video invalid', 'Tag source invalid', 'Tag marquee invalid', 'Namespace prefix gcse is not defined', 'Tag gcse:search invalid', 'Tag gcse:searchbox-only invalid', 'Tag nav invalid'].include?(e.to_s)
       p.seoerrors.create(code: PARSER, desc: e.to_s.force_encoding('utf-8'), line:e.line, page_id:p.id, site_id: p.site.id)
@@ -174,10 +181,11 @@ mArgv.each do |url|
   SitemapGenerator::Sitemap.compress = false
   site.name = url if site.name.nil?
   if !site || !site.url
-  return
+    return
   end
   pages = []
   $images = []
+  $httpErrors = []
   puts "Crawling #{site.url}"
   crawlPb = ProgressBar.create(:total => nil,
                                :format         => '%a %bC%i %p%% %t',
@@ -185,11 +193,14 @@ mArgv.each do |url|
                                :remainder_mark => 'o')
   Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => true) do |anemone|
     anemone.on_every_page do |page|
-    if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
-      crawlPb.increment
-      pages << page.url
-      datas << page
-    end #ahah
+      if page.code.to_i == 404
+        httpErrors << page.url
+      end
+      if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
+        crawlPb.increment
+        pages << page.url
+        datas << page
+      end #ahah
     end
   end
   crawlPb.refresh
@@ -212,7 +223,7 @@ mArgv.each do |url|
   #dupCheck = []
   #site.hxes.each { |hx| dupCheck += site.hxes.select { |c|site.hxes.count {|c| c.content.to_s == hx.content.to_s} > 1} }
   dupCheck = site.hxes - site.hxes.uniq! {|l| l.content}
-  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: "[ Duplique ] " + e.content.force_encoding("utf-8"))}
+  dupCheck.each { |e| e.page.seoerrors.create(code:HX_DUPLICATE, line: e[:line], page_id: e.page.id, site_id: e.page.site.id, desc: "[ Duplique ] " + e.content.to_s.force_encoding("utf-8"))}
   puts 'Generating Sitemap'
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
