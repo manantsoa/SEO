@@ -25,6 +25,7 @@ match '/report/ranks/:id/:pid'       , :to => 'report#chart', :constraints => { 
 match '/report'       , :to => 'report#index', :as => :list                      , via:[:get]
 match '/report/print/:id', :to => 'report#download'                                  , via:[:get]
 match '/report/test/design', :to => 'report#design', via:[:get]
+match '*path' => redirect('/'), via: :get
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
