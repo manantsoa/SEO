@@ -156,7 +156,7 @@ def runPage(page, site)
       rescue
         dt = nil
       end
-      tmp.append({:loc => i[:src].force_encoding("utf-8"), :title => i[:alt].force_encoding("utf-8"), :caption => dt})
+      tmp.append({:loc => URI::encode(i[:src].to_s.force_encoding("utf-8")), :title => (i[:alt].to_s.force_encoding("utf-8")), :caption => dt})
       p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
     end
   end
