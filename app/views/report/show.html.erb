@@ -56,7 +56,7 @@ Erreurs d'images sans Alt :
 
 <% @site.pages.each do |p| %>
 	<div id="bloc_url_show">
-		<div id="url_show"><%= link_to p.url, '/report/' + @site.id.to_s + '/' + p.id.to_s %></div>
+		<div id="url_show"><%= link_to URI(p.url.to_s).path, '/report/' + @site.id.to_s + '/' + p.id.to_s %></div>
 		<div id="error_show">
 			<div id="error_show_hx">
 				<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>
