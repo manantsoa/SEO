@@ -21,12 +21,12 @@
 		</div>
 		<div id="img_sitemap_report">
 			<% unless s.sitemap.nil? %>
-				<%= link_to "", "report/print/" + s.id.to_s, method: :get  %>
+				<%= link_to "Sitemap HTTP", "report/print/" + s.id.to_s, method: :get  %>
 			<% end %>
 		</div>
 		<div id="img_sitemap_https_report">
 			<% unless s.sitemap.nil? %>
-				<%= link_to "", "report/print/" + s.id.to_s + "https.xml", method: :get  %>
+				<%= link_to "Sitemap HTTPS", "report/print/" + s.id.to_s + "https.xml", method: :get  %>
 			<% end %>
 		</div>
 			<div id="img_search_report">

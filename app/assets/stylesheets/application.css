@@ -252,13 +252,12 @@ h1{
 }
 
 #img_sitemap_report a{
-	background:url(sitemap.png) no-repeat;
-	width:25px;
-	height:25px;
 	background-size: 100% 100%;
-	margin-left: -30px;
+	margin-left: 50%;
 	margin-top: 30px;
 	position: absolute;
+	color: green;
+	text-decoration:underline;
 }
 
 #img_search_report a{
@@ -458,4 +457,13 @@ td {
 	height:200px;
 	width:400px;
 	background-size: 100% 100%;
+}
+
+#img_sitemap_https_report a{
+	background-size: 100% 100%;
+	margin-left: 50%;
+	position: absolute;
+	margin-top: 90px;
+	color: green;
+	text-decoration:underline;
 }
