@@ -155,8 +155,8 @@ def runPage(page, site)
               dt = EXIFR::JPEG.new(iData).image_description.force_encoding("utf-8")
       rescue
         dt = nil
-      end
-      tmp.append({:loc => URI::encode(i[:src].to_s.force_encoding("utf-8")), :title => (i[:alt].to_s.force_encoding("utf-8")), :caption => dt})
+      end#URI::encode
+      tmp.append({:loc => (i[:src].to_s.force_encoding("utf-8")), :title => (i[:alt].to_s.force_encoding("utf-8")), :caption => dt})
       p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
     end
   end
@@ -229,7 +229,13 @@ mArgv.each do |url|
   puts 'Generating Sitemap'
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
-      add p.path.to_s.force_encoding("utf-8"), :changefreq => 'daily', :priority => 0.5, :images => $images.shift
+      begin
+        i = $images.shift
+        i.each {|l| l[:loc].gsub! '%20', ''}
+        add p.path.to_s.force_encoding("utf-8"), :changefreq => 'daily', :priority => 0.5, :images => i
+      rescue Exception => e
+        puts e, e.backtrace
+      end
     end
   end
   site.sitemap.delete unless site.sitemap.nil?
@@ -239,5 +245,8 @@ mArgv.each do |url|
 end
 puts "Done."
 open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'r') {|f| @fData = f.read}
-open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'w') {|f| f.write @fData.gsub! "\n", ''}
+#puts 'COUCOU'
+#puts @fData.gsub "\n", ''
+#puts 'MEEEEEEEEH'
+open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'w') {|f| f.write @fData.gsub "\n", ''}
 exit(0)

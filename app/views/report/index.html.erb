@@ -24,6 +24,11 @@
 				<%= link_to "", "report/print/" + s.id.to_s, method: :get  %>
 			<% end %>
 		</div>
+		<div id="img_sitemap_https_report">
+			<% unless s.sitemap.nil? %>
+				<%= link_to "", "report/print/" + s.id.to_s + "https.xml", method: :get  %>
+			<% end %>
+		</div>
 			<div id="img_search_report">
 			<%= link_to "", list_path + "/ranks/" +  s.id.to_s %>
 		</div>
