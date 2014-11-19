@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'csv'
 
 class ReportController < ApplicationController
@@ -27,7 +28,7 @@ class ReportController < ApplicationController
 			redirect_to root_path
 		end
 	end
-	def hx		
+	def hx
 		if (@site = Site.find(params[:id])) == nil
 			redirect_to root_path
 		end
@@ -93,14 +94,13 @@ class ReportController < ApplicationController
 		      csv << [key.query, key.positions.last.pos, key.positions.minimum(:pos), key.positions.last.updated_at.strftime("%Y-%m-%d")]
 		    end
 		  end
-		   
 		send_data keywords_csv, :type => 'text/xls', :filename => 'export.xls'
 	end
 	def chart
 		@keyword = Site.find(params[:id]).queries.all.where(id:params[:pid]).first
 		posi = []
 		date = []
-		@keyword.positions.each do |t| 
+		@keyword.positions.each do |t|
 			posi.push(t.pos)
 			date.push(t.created_at.to_time.strftime("%Y-%m-%d"))
 		end
@@ -120,6 +120,13 @@ class ReportController < ApplicationController
 	def download
 		site = Site.find(params[:id])
 		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s)
+          sleep(1)
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + ".xml"
+	end
+	def download_https
+		site = Site.find(params[:id])
+          spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
+		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + 'https.xml')
 		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + ".xml"
 	end
 end

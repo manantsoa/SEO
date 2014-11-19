@@ -24,6 +24,7 @@ match '/report/ranks/:id', :to => 'report#ranks_update'                 , via:[:
 match '/report/ranks/:id/:pid'       , :to => 'report#chart', :constraints => { :pid => /[0-9]+(\%7C[0-9]+)*/ }                         , via:[:get]
 match '/report'       , :to => 'report#index', :as => :list                      , via:[:get]
 match '/report/print/:id', :to => 'report#download'                                  , via:[:get]
+match '/report/print-https/:id', :to => 'report#download_https'                                  , via:[:get]
 match '/report/test/design', :to => 'report#design', via:[:get]
 match '*path' => redirect('/'), via: :get
 
