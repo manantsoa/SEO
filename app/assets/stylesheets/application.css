@@ -467,3 +467,21 @@ td {
 	color: green;
 	text-decoration:underline;
 }
+
+#img_sitemap_image_https_report a{
+	background-size: 100% 100%;
+	margin-left: 65%;
+	position: absolute;
+	margin-top: 90px;
+	color: green;
+	text-decoration:underline;
+}
+
+#img_sitemap_image_report a{
+	background-size: 100% 100%;
+	margin-left: 65%;
+	margin-top: 30px;
+	position: absolute;
+	color: green;
+	text-decoration:underline;
+}

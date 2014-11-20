@@ -120,13 +120,24 @@ class ReportController < ApplicationController
 	def download
 		site = Site.find(params[:id])
 		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s)
-          sleep(1)
-		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + ".xml"
+        	send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + ".xml"
 	end
 	def download_https
 		site = Site.find(params[:id])
-          spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
-		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + 'https.xml')
-		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + ".xml"
+#          spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
+ #         sleep(3)
+          data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + 'https.xml')
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + "https.xml"
+	end
+	def download_image
+		site = Site.find(params[:id])
+		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + '-image.xml')
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + "-image.xml"
+	end
+	def download_https_image
+		site = Site.find(params[:id])
+  #        spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
+		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + '-imagehttps.xml')
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + "https-image.xml"
 	end
 end

@@ -137,7 +137,7 @@ def runPage(page, site)
     end
     if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
       p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a["href"].to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site_id)
-    end
+    endb
   end
   # Images
   tmp = []
@@ -238,15 +238,35 @@ mArgv.each do |url|
       end
     end
   end
+  site.sitemap_image.delete unless site.sitemap_image.nil?
+  puts '----------------' + SitemapGenerator::Sitemap.filename.to_s
+  site.sitemap_image = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s, site_id:site.id)
+  open(Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + '.xml', 'r') {|iFile| 
+    open(Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + '-image.xml', 'w') {|oFile| oFile.write iFile.read}
+  }
+  SitemapGenerator::Sitemap.create do
+    pages.each do |p|
+      begin
+        add p.path.to_s.force_encoding("utf-8"), :changefreq => 'daily', :priority => 0.5
+      rescue Exception => e
+        puts e, e.backtrace
+      end
+    end
+  end
   site.sitemap.delete unless site.sitemap.nil?
   site.sitemap = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s + ".xml", site_id:site.id)
   site.processing = false
   site.save
 end
 puts "Done."
+open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + "-image.xml"), 'r') {|f| @fData = f.read}
+@fData = '<?xml version="1.0" encoding="UTF-8"?>
+ <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + @fData[@fData.index('>', 45) + 1..-1]
+open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + "-image.xml"), 'w') {|f| f.write @fData.gsub "\n", ''}
 open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'r') {|f| @fData = f.read}
-#puts 'COUCOU'
-#puts @fData.gsub "\n", ''
-#puts 'MEEEEEEEEH'
+@fData = '<?xml version="1.0" encoding="UTF-8"?>
+ <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + @fData[@fData.index('>', 45) + 1..-1]
 open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'w') {|f| f.write @fData.gsub "\n", ''}
+`python2 https.py -i ./public`
 exit(0)

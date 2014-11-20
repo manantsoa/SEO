@@ -29,6 +29,16 @@
 				<%= link_to "Sitemap HTTPS", "report/print-https/" + s.id.to_s, method: :get  %>
 			<% end %>
 		</div>
+		<div id="img_sitemap_image_report">
+			<% unless s.sitemap.nil? %>
+				<%= link_to "Sitemap Image HTTP", "report/print-image/" + s.id.to_s, method: :get  %>
+			<% end %>
+		</div>
+		<div id="img_sitemap_image_https_report">
+			<% unless s.sitemap.nil? %>
+				<%= link_to "Sitemap Image HTTPS", "report/print-https-image/" + s.id.to_s, method: :get  %>
+			<% end %>
+		</div>
 			<div id="img_search_report">
 			<%= link_to "", list_path + "/ranks/" +  s.id.to_s %>
 		</div>
