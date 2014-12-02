@@ -15,6 +15,9 @@ require 'ruby-progressbar'
 
 #require 'drb/drb'
 
+#
+# Desole pour la gueule du code, patch sur patch pour des conneries useless
+
 $images = []
  #processHost="druby://localhost:8787"
 # Erreurs, mets les en dur et je rm ton code !
@@ -76,16 +79,11 @@ def runPage(page, site)
     p = site.pages.create
     p.url = page.url.to_s
   end
-  #IO.popen("parser.rb #{site.id} #{p.id}") {|fd| fd.puts page.body}
   p.site_id = site.id
   p.seoerrors.delete_all
   p.hxes.delete_all
   p.titles.delete_all
   doc = Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11)
-  #FRONT_OBJECT = SplitServer.new ([Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11), p])
-  # threads << Thread.new {spawn("ruby img.rb")}
-  #threads << Thread.new {spawn("ruby errors.rb")}
-  # Erreurs HTML
   $httpErrors.each do |badlink|
     if page.body.include? badlink
       p.seoerrors.create(code: DEAD_LINK, desc: badlink, site_id: p.site.id)
@@ -110,19 +108,18 @@ def runPage(page, site)
     (0..hx.count - 1).each do |idx|
       p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, desc: "h"+prv.to_s+" -> h"+hx[idx][:x].to_s, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
       unless ((hx[idx][:x] >= maxHx) || (orderRem))
-        p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)      
+        p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)
         orderRem = 1
       end
       p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
       prv = hx[idx][:x]
-        end
+    end
   end
   # Title
   doc.css('title').each do |t|
     p.titles.create(content:t.content, line: t.line, page_id:p.id)
     p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
   end
-  
   hst = URI.parse(site.url).host
   doc.css('a').each do |a|
     if a['href'].nil? or a['href'] == nil.to_s
@@ -137,7 +134,7 @@ def runPage(page, site)
     end
     if (!(a["href"].start_with? "./") && !(dst.to_s.include? hst.to_s) && !(dst.host.nil?)) && (!a["rel"] || !a["rel"].include?("nofollow"))
       p.seoerrors.create(code:EXTERNAL_FOLLOW, line:a.line, desc:a["href"].to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site_id)
-    endb
+    end
   end
   # Images
   tmp = []
@@ -148,20 +145,19 @@ def runPage(page, site)
     u = site.url
     u = u[0..-2] if u[-1] == '/'
     i[:src] = u + i[:src][1..-1] if i[:src].to_s.start_with?("./")
-    #p.imgs.create(url:i[:src], title:i[:title], alt:i[:alt], page_id:p.id)
     if i[:src].end_with?(".jpeg") || i[:src].end_with?(".jpg")
       begin
-              iData = open(i[:src])
-              dt = EXIFR::JPEG.new(iData).image_description.force_encoding("utf-8")
+        iData = open(i[:src])
+        dt = EXIFR::JPEG.new(iData).image_description.force_encoding("utf-8")
       rescue
         dt = nil
-      end#URI::encode
+      end
       tmp.append({:loc => (i[:src].to_s.force_encoding("utf-8")), :title => (i[:alt].to_s.force_encoding("utf-8")), :caption => dt})
       p.seoerrors.create(code:IMG_NOALT, line:i[:line], desc:i.to_s.force_encoding("utf-8"), page_id:p.id, site_id:p.site.id) unless (i[:alt] != nil)
     end
   end
-        $images << tmp
-        p.save
+  $images << tmp
+  p.save
 end
 
 # Main
@@ -169,22 +165,31 @@ mArgv = ARGV
 if mArgv[0].nil?
   Site.all.each { |s| mArgv.append(s.url)}
 end
+mobile = false
+if mArgv.include? "-m"
+  mArgv.delete "-m"
+  mobile = true
+end
 mArgv.each do |url|
   datas = []
   url = 'http://' + url unless url.start_with?('http://') || url.start_with?('https://')
   if (site = Site.find_by(url:url)) == nil
     site = Site.create
   end
+  puts "URL: " + url.to_s
   site.url = url
   site.processing = true
   site.save
   SitemapGenerator::Sitemap.default_host = url
-  SitemapGenerator::Sitemap.filename = Time.now.to_i
+  SitemapGenerator::Sitemap.filename = Time.now.to_i.to_s
+  SitemapGenerator::Sitemap.filename += '-mobile' if mobile == true
   SitemapGenerator::Sitemap.compress = false
   site.name = url if site.name.nil?
   if !site || !site.url
     return
   end
+  url += '/' unless url.end_with? '/'
+  url += 'm-index.html' unless mobile == false
   pages = []
   $images = []
   $httpErrors = []
@@ -193,7 +198,7 @@ mArgv.each do |url|
                                :format         => '%a %bC%i %p%% %t',
                                :progress_mark  => ' ',
                                :remainder_mark => 'o')
-  Anemone.crawl(site.url, :threads => 8, :verbose => false, :obey_robots_txt => true) do |anemone|
+  Anemone.crawl(url, :threads => 8, :verbose => false, :obey_robots_txt => true) do |anemone|
     anemone.on_every_page do |page|
       if page.code.to_i == 404
         $httpErrors << page.url.to_s
@@ -231,6 +236,9 @@ mArgv.each do |url|
     pages.each do |p|
       begin
         i = $images.shift
+        if mobile == true
+          next unless p.path.to_s.include?('m-')
+        end
         i.each {|l| l[:loc].gsub! '%20', ''}
         add p.path.to_s.force_encoding("utf-8"), :changefreq => 'daily', :priority => 0.5, :images => i
       rescue Exception => e
@@ -239,14 +247,16 @@ mArgv.each do |url|
     end
   end
   site.sitemap_image.delete unless site.sitemap_image.nil?
-  puts '----------------' + SitemapGenerator::Sitemap.filename.to_s
   site.sitemap_image = Sitemap.create(str:SitemapGenerator::Sitemap.filename.to_s, site_id:site.id)
-  open(Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + '.xml', 'r') {|iFile| 
+  open(Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + '.xml', 'r') {|iFile|
     open(Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + '-image.xml', 'w') {|oFile| oFile.write iFile.read}
   }
   SitemapGenerator::Sitemap.create do
     pages.each do |p|
       begin
+        if (mobile and not p.path.to_s.include? '/m-') or (not mobile and p.path.to_s.include? '/m-')
+          next
+        end
         add p.path.to_s.force_encoding("utf-8"), :changefreq => 'daily', :priority => 0.5
       rescue Exception => e
         puts e, e.backtrace

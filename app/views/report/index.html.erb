@@ -17,7 +17,7 @@
 			<%= link_to "", "/report/" + s.id.to_s, method: :delete %>
 		</div>
 		<div id="img_refresh_report">
-			<%= link_to "", crawler_path + "/" + s.id.to_s %>
+			<%= link_to "", crawler_path + "/" + s.id.to_s, method: :get %>
 		</div>
 		<div id="img_sitemap_report">
 			<% unless s.sitemap.nil? %>
@@ -47,7 +47,7 @@
 		<span id="txt">Crawl le : <%= s.created_at.to_s(:short) %></span><br/>
 		<span id="txt">Mis à jour le : <%= s.updated_at.to_s(:short) %></span><br/>
 		<span id="txt">Nombre de pages : <%= s.pages.count %></span><br/>
-		<span id="txt"> <% if s.processing %> En cours de crawl <% else %> Crawl fini <% end %> </span><br />
+		<span id="txt"> <% if s.processing  == true %> En cours de crawl <% else %> Crawl fini <% end %> </span><br />
 		<span id="txt">Erreurs de balises hx :</span>
 		<font color=<% if s.seoerrors.where(code: [1, 2, 3]).count == 0 %> "green" <% else %> "red" <% end %>>
 			<% if s.seoerrors.where(code: [1, 2, 3]).count == 0 %>
