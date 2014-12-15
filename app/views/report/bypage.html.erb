@@ -51,6 +51,15 @@ Compte rendu détaillé : <br /><br />
 		<font color="green">Taille du title valide</font><br />
 	<% end %>
 	<br />
+	<% if p.seoerrors.where(code: @DEAD_LINK).count > 0 %>
+		<font color="red"> 
+		Erreur 404 :<br /><br />
+		<% p.seoerrors.where(code: @DEAD_LINK).each do |i| %>
+		 <%= link_to i.desc, i.desc, target: '_blank', style:'color:red;' %><br />
+		 <%end%>
+	 	</font>
+	<% end %>
+	<br />
 	Images sans alt : 
 	<% if p.seoerrors.where(code: @IMG_NOALT).count > 0 %> <font color="red"> 
 		<%= p.seoerrors.where(code: @IMG_NOALT).count %>

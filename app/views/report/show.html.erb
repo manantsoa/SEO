@@ -53,10 +53,6 @@ Erreurs 404 :
 	Aucune erreur<br />
 <%else%>
 	<%= @site.seoerrors.where(code: [@DEAD_LINK]).count %> erreurs<br />
-	<% @site.seoerrors.where(code: [@DEAD_LINK]).each do |s| %>
-		<%= s.desc %>
-		<br />
-	<% end %>	
 <% end %>
 </font>
 <br/>
@@ -68,9 +64,15 @@ Erreurs 404 :
 
 <% @site.pages.each do |p| %>
 	<div id="bloc_url_show">
-		<div id="url_show"><%= link_to URI(p.url.to_s).path, '/report/' + @site.id.to_s + '/' + p.id.to_s %></div>
+		<div id="url_show"><%= link_to URI(p.url.to_s).path, '/report/' + @site.id.to_s + '/' + p.id.to_s %>
+		<% if p.seoerrors.where(code: [@DEAD_LINK]).count > 0 %>
+			<font color="red">
+		 		| Erreurs 404
+			</font>
+		<% end %>
+		</div>
 		<div id="error_show">
-			<div id="error_show_hx">
+			<div id="error_show">
 				<% if p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count > 0 %>
 					<font color="red">
 				 		Erreurs balise hx : <%= p.seoerrors.where(code: [@HX_ORDER, @HX_DUPLICATE, @HX_DIFF]).count %>
