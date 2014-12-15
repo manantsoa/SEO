@@ -53,6 +53,10 @@ Erreurs 404 :
 	Aucune erreur<br />
 <%else%>
 	<%= @site.seoerrors.where(code: [@DEAD_LINK]).count %> erreurs<br />
+	<% @site.seoerrors.where(code: [@DEAD_LINK]).each do |s| %>
+		<%= s.desc %>
+		<br />
+	<% end %>	
 <% end %>
 </font>
 <br/>

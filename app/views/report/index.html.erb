@@ -60,11 +60,11 @@
 			<% end %>
 		</font>
 		<span id="txt">Erreurs de 404 :</span>
-		<font color=<% if s.seoerrors.where(code: [1, 2, 3]).count == 0 %> "green" <% else %> "red" <% end %>>
+		<font color=<% if s.seoerrors.where(code: [11]).count == 0 %> "green" <% else %> "red" <% end %>>
 			<% if s.seoerrors.where(code: [11]).count == 0 %>
 				Aucune erreur<br />
 			<%else%>
-				<%= s.seoerrors.where(code: [1, 2, 3]).count %> erreurs<br />
+				<%= s.seoerrors.where(code: [11]).count %> erreurs<br />
 			<% end %>
 		</font>
 		<span id="txt">Nombre d'erreurs html : </span>
