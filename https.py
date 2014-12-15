@@ -26,11 +26,11 @@ def f(path):
             f(a)
         if '.xml' in a and not 'https' in a:
             print 'XML file found : {}.'.format(a)
-            with open(path + a, 'r') as sitemap:
+            with open(path + '/' + a, 'r') as sitemap:
                 raw = sitemap.read()
                 if raw is not None:
                     fmt = raw[:raw.index('<url>')] + raw[raw.index('<url>'):].replace('http:', 'https:')
-                    with open(path + str(a).split('.')[0] + 'https.xml' , 'w') as sitemap:
+                    with open(path + '/' + str(a).split('.')[0] + 'https.xml' , 'w') as sitemap:
                         sitemap.write(fmt)
 if namespace.input is not None:
     f(namespace.input[0])
