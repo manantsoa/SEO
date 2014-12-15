@@ -20,6 +20,7 @@ class ReportController < ApplicationController
 		@EXTERNAL_FOLLOW    = 8		         # Lien externe sans nofollow
 		@NO_HREF            = 9     	     # balise <a> sans href
 		@BAD_LINK           = 10         	 # Lien mal formé qui fait planter le parseur uri
+		@DEAD_LINK          = 11         	 # Ein 404
 	end
 	def show
 		begin	

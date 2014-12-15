@@ -47,6 +47,14 @@ Erreurs d'images sans Alt :
 	<%= @site.seoerrors.where(code: [@IMG_NOALT]).count %> erreurs<br />
 <% end %>
 </font>
+Erreurs 404 :
+<font color=<% if @site.seoerrors.where(code: [@DEAD_LINK]).count == 0 %> "green" <% else %> "red" <% end %>>
+<% if @site.seoerrors.where(code: [@DEAD_LINK]).count == 0 %>
+	Aucune erreur<br />
+<%else%>
+	<%= @site.seoerrors.where(code: [@DEAD_LINK]).count %> erreurs<br />
+<% end %>
+</font>
 <br/>
 </center>
 

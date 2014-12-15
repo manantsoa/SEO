@@ -15,8 +15,9 @@ match '/crawler'       , :to => 'pages#configCrawler'                           
 match '/crawler'       , :to => 'pages#submitCrawl', :as => :sites               , via:[:post]
 match '/index'         , :to => 'pages#index'                                    , via:[:get]
 match '/crawler/:id'       , :to => 'pages#recrawl'                              , via:[:get]
+match '/crawler/mobile/:id'       , :to => 'pages#recrawl'                              , via:[:get]
 match '/report/ranks/:id'       , :to => 'report#ranks'                          , via:[:get]
-match '/report/ranks/:id'       , :to => 'report#ranks_add'                      , via:[:post] 
+match '/report/ranks/:id'       , :to => 'report#ranks_add'                      , via:[:post]
 match '/report/ranks/:id'       , :to => 'report#ranks_destroy'                  , via:[:delete]
 match '/report/ranks/:id/export', :to => 'report#ranks_textfile'                 , via:[:get] 
 match '/report/ranks/:id/csv', :to => 'report#ranks_csv'                 , via:[:get] 
@@ -28,7 +29,7 @@ match '/report/print-https/:id', :to => 'report#download_https'                 
 match '/report/print-image/:id', :to => 'report#download_image'                                  , via:[:get]
 match '/report/print-https-image/:id', :to => 'report#download_https_image'                                  , via:[:get]
 match '/report/test/design', :to => 'report#design', via:[:get]
-match '*path' => redirect('/'), via: :get
+#match '*path' => redirect('/'), via: :get
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

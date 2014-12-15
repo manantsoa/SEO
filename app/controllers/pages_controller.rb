@@ -17,6 +17,12 @@ class PagesController < ApplicationController
     spawn("ruby crawler.rb \"" + site.url.to_s + "\"")
     redirect_to list_path
   end
+  def recrawl2
+    site = Site.find(params[:id])
+    #Site.create(name:site.name, url:site.url.to_s) unless Site.where(url:url.to_s).count > 0
+    spawn("ruby crawler.rb -m \"" + site.url.to_s + "\"")
+    redirect_to list_path
+  end 
   def index
  	  @sites = Site.all
   end
