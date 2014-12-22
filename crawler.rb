@@ -12,7 +12,7 @@ require 'benchmark'
 require 'sitemap_generator'
 require 'exifr'
 require 'ruby-progressbar'
-
+require 'htmlentities'
 #require 'drb/drb'
 
 #
@@ -85,7 +85,8 @@ def runPage(page, site)
   p.titles.delete_all
   doc = Nokogiri::HTML(page.body, nil, nil, 1 | 1 << 11)
   $httpErrors.each do |badlink|
-    if page.body.include? badlink
+    if page.body.include? ("\"" + badlink + "\"") or
+        page.body.include? ("'" + badlink + "'")
       p.seoerrors.create(code: DEAD_LINK, desc: badlink, site_id: p.site.id)
     end
   end
@@ -101,18 +102,23 @@ def runPage(page, site)
     hx.each {|h| h[:x] = x.to_i if h[:x].nil?}
   end
   if hx.count > 0
-    hx = hx.sort_by {|a| a[:line]}
+    hx = hx.sort_by {|a| doc.to_s.index(a.to_s)}
     prv = hx[0][:x]
     maxHx = prv
     orderRem = 0
+   # puts "HX: #{hx}"
     (0..hx.count - 1).each do |idx|
       p.seoerrors.create(code: HX_DIFF, line:hx[idx].line, desc: "h"+prv.to_s+" -> h"+hx[idx][:x].to_s, page_id: p.id, site_id: p.site.id) unless (hx[idx][:x].to_i - prv.to_i).abs <= 1.to_i
-      unless ((hx[idx][:x] >= maxHx) || (orderRem))
-        p.seoerrors.create(code: HX_ORDER, line:hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)
+      unless ((hx[idx][:x] >= maxHx) || (orderRem != 0))
+        p.seoerrors.create(code: HX_ORDER, line: hx[idx].line, desc: "Premiere balise de la page : h"+maxHx.to_s+" | balise en erreur : h"+hx[idx][:x], page_id: p.id, site_id: p.site.id)
         orderRem = 1
       end
       p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
       prv = hx[idx][:x]
+    end
+    puts ">>>>>>", p.url, hx.size.to_i, hx, "<<<<<<"
+    if hx.size.to_i == 0 or hx[0][:x].to_i != 1
+      p.seoerrors.create(code: HX_ORDER, line: nil, desc: "La premiere balise de la page n'est pas un h1", page_id: p.id, site_id: p.site.id)
     end
   end
   # Title
@@ -127,7 +133,7 @@ def runPage(page, site)
       next
     end
     begin
-      dst = URI.parse(a['href'].to_s)
+      dst = URI.parse(URI.encode(a['href'].to_s))
     rescue
       p.seoerrors.create(code:BAD_LINK, line:a.line, desc:a["href"].to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site_id)
       next
@@ -176,7 +182,6 @@ mArgv.each do |url|
   if (site = Site.find_by(url:url)) == nil
     site = Site.create
   end
-  puts "URL: " + url.to_s
   site.url = url
   site.processing = true
   site.save
@@ -188,8 +193,10 @@ mArgv.each do |url|
   if !site || !site.url
     return
   end
-  url += '/' unless url.end_with? '/'
-  url += 'm-index.html' unless mobile == false
+  unless mobile == false
+    url += '/' unless url.end_with? '/'
+    url += 'm-index.html'
+  end
   pages = []
   $images = []
   $httpErrors = []
@@ -203,9 +210,9 @@ mArgv.each do |url|
       if page.code.to_i == 404
         $httpErrors << page.url.to_s
       end
-      if page.html? && page.code.to_i == 200 && page.url.to_s != site.url
+      if page.html? && page.code.to_i == 200
         crawlPb.increment
-        pages << page.url
+        pages << URI.parse(HTMLEntities.new.decode(page.url).to_s)
         datas << page
       end
     end
