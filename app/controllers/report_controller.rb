@@ -141,4 +141,15 @@ class ReportController < ApplicationController
 		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + '-imagehttps.xml')
 		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + "https-image.xml"
 	end
+	def download_mobile
+		site = Site.find(params[:id])
+		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + '.xml')
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + "-mobile.xml"
+	end
+	def download_https_mobile
+		site = Site.find(params[:id])
+          spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
+		data = open(IMAGES_PATH + "/" + site.sitemap.str.to_s.split('.')[0] + 'https.xml')
+		send_data data.read, type: 'application/xml', filename: "Sitemap-" + site.url + "https-mobile.xml"
+	end
 end

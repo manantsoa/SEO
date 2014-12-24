@@ -7,6 +7,8 @@ class PagesController < ApplicationController
     url = URI.parse(params[:site][:url])
     Site.create(url:url.to_s) unless Site.where(url:url.to_s).count > 0
     spawn("ruby crawler.rb \"" + url.to_s + "\"")
+    spawn("ruby crawler.rb -m \"" + url.to_s + "\"")
+    spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
   	redirect_to list_path
   end
   def hxReport
@@ -14,14 +16,18 @@ class PagesController < ApplicationController
   def recrawl
     site = Site.find(params[:id])
     #Site.create(name:site.name, url:site.url.to_s) unless Site.where(url:url.to_s).count > 0
+    Signal.trap("CLD") {Process.wait}
      spawn("ruby crawler.rb \"" + site.url.to_s + "\"")
+     spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
      redirect_to list_path
   end
   def recrawl2
     site = Site.find(params[:id])
+    Signal.trap("CLD") {Process.wait}
     spawn("ruby crawler.rb -m \"" + site.url.to_s + "\"")
+    spawn('python2 ' + Rails.root.to_s + '/https.py -i ' + Rails.root.to_s + '/public/')
     redirect_to list_path
-  end 
+  end
   def index
  	  @sites = Site.all
   end

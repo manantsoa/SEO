@@ -28,6 +28,8 @@ match '/report/print/:id', :to => 'report#download'                             
 match '/report/print-https/:id', :to => 'report#download_https'                                  , via:[:get]
 match '/report/print-image/:id', :to => 'report#download_image'                                  , via:[:get]
 match '/report/print-https-image/:id', :to => 'report#download_https_image'                                  , via:[:get]
+match '/report/print-mobile/:id', :to => 'report#download_mobile'                                  , via:[:get]
+match '/report/print-https-mobile/:id', :to => 'report#download_https_mobile'                                  , via:[:get]
 match '/report/test/design', :to => 'report#design', via:[:get]
 #match '*path' => redirect('/'), via: :get
 

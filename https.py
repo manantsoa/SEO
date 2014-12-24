@@ -5,7 +5,7 @@
 ## Login   <germain.gau@epitech.eu>
 ##
 ## Started on  Fri Nov 14 14:52:52 2014
-## Last update Mon Nov 17 15:03:14 2014 
+## Last update Wed Dec 24 11:06:56 2014 
 ##
 
 import sys
@@ -29,7 +29,10 @@ def f(path):
             with open(path + '/' + a, 'r') as sitemap:
                 raw = sitemap.read()
                 if raw is not None:
-                    fmt = raw[:raw.index('<url>')] + raw[raw.index('<url>'):].replace('http:', 'https:')
+                    try:
+                        fmt = raw[:raw.index('<url>')] + raw[raw.index('<url>'):].replace('http:', 'https:')
+                    except ValueError:
+                        pass
                     with open(path + '/' + str(a).split('.')[0] + 'https.xml' , 'w') as sitemap:
                         sitemap.write(fmt)
 if namespace.input is not None:

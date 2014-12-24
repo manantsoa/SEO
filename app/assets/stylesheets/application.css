@@ -486,12 +486,20 @@ td {
 	text-decoration:underline;
 }
 
-#img_sitemap_mobile a{
-	background:url(phone.jpg) no-repeat;
-	width:25px;
-	height:25px;
+#img_sitemap_mobile_https_report a{
 	background-size: 100% 100%;
-	margin-left: -30px;
+	margin-left: 80%;
+	position: absolute;
+	margin-top: 90px;
+	color: green;
+	text-decoration:underline;
+}
+
+#img_sitemap_mobile_report a{
+	background-size: 100% 100%;
+	margin-left: 80%;
 	position: absolute;
 	margin-top: 30px;
+	color: green;
+	text-decoration:underline;
 }

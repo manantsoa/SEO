@@ -34,12 +34,18 @@
 				<%= link_to "Sitemap Image HTTP", "report/print-image/" + s.id.to_s, method: :get  %>
 			<% end %>
 		</div>
-		<div id="img_sitemap_mobile">
-				<%= link_to "", crawler_path + "/mobile/" + s.id.to_s %>
-		</div>
 		<div id="img_sitemap_image_https_report">
 			<% unless s.sitemap.nil? %>
-				<%= link_to "Sitemap Image HTTPS", "report/print-https-image/" + s.id.to_s, method: :get  %>
+				<%= link_to "Sitemap image HTTPS", "report/print-https-image/" + s.id.to_s, method: :get  %>
+			<% end %>
+		</div>
+
+		<div id="img_sitemap_mobile_report">
+				<%= link_to "Sitemap Mobile", "report/print-mobile/" + s.id.to_s %>
+		</div>
+		<div id="img_sitemap_mobile_https_report">
+			<% unless s.sitemap.nil? %>
+				<%= link_to "Sitemap Mobile HTTPS", "report/print-https-mobile/" + s.id.to_s, method: :get  %>
 			<% end %>
 		</div>
 			<div id="img_search_report">
