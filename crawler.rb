@@ -116,10 +116,10 @@ def runPage(page, site)
       p.hxes.create(x:hx[idx][:x], pos:hx[idx].line, content:(hx[idx].text != nil.to_s ? hx[idx].text.to_s : "Erreur HTML sur la balise"), page_id:p.id) rescue nil
       prv = hx[idx][:x]
     end
-    puts ">>>>>>", p.url, hx.size.to_i, hx, "<<<<<<"
+  end
+#  puts ">>>>>>", p.url, hx.size.to_i, hx, "<<<<<<"
     if hx.size.to_i == 0 or hx[0][:x].to_i != 1
       p.seoerrors.create(code: HX_ORDER, line: nil, desc: "La premiere balise de la page n'est pas un h1", page_id: p.id, site_id: p.site.id)
-    end
   end
   # Title
   doc.css('title').each do |t|
