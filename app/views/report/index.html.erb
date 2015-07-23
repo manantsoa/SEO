@@ -19,6 +19,10 @@
 		<div id="img_refresh_report">
 			<%= link_to "", crawler_path + "/" + s.id.to_s, method: :get %>
 		</div>
+		<div id="img_sitemap_mobile">
+		  <%= link_to "", crawler_path + "/mobile/" + s.id.to_s %>
+		</div>
+		
 		<div id="img_sitemap_report">
 			<% unless s.sitemap.nil? %>
 				<%= link_to "Sitemap HTTP", "report/print/" + s.id.to_s, method: :get  %>

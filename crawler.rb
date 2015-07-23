@@ -14,6 +14,7 @@ require 'exifr'
 require 'ruby-progressbar'
 require 'htmlentities'
 #require 'drb/drb'
+require 'sitemap-parser'
 
 #
 # Desole pour la gueule du code, patch sur patch pour des conneries useless
@@ -124,7 +125,7 @@ def runPage(page, site)
   # Title
   doc.css('title').each do |t|
     p.titles.create(content:t.content, line: t.line, page_id:p.id)
-    p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site.id) unless t.content.size <= 65
+    p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site.id) unless t.content.size <= 55
   end
   hst = URI.parse(site.url).host
   doc.css('a').each do |a|
@@ -175,11 +176,28 @@ mobile = false
 if mArgv.include? "-m"
   mArgv.delete "-m"
   mobile = true
+  puts "Mobile mode."
 end
 mArgv.each do |url|
   datas = []
+  urls = []
   url = 'http://' + url unless url.start_with?('http://') || url.start_with?('https://')
-  if (site = Site.find_by(url:url)) == nil
+   Dir.foreach('sitemaps') do |raw_sitemap|
+    sitemap = nil
+    begin
+          sitemap = SitemapParser.new 'sitemaps/' + raw_sitemap
+    rescue
+        next
+    end
+    lnks = sitemap.to_a
+if HTMLEntities.new.decode(lnks[0]).to_s.include? HTMLEntities.new.decode(url).to_s
+      urls += lnks
+      puts "Recovered", lnks.size(), "links from sitemap:", lnks[0]
+    end
+  end
+    puts 'URLS:', urls.to_s
+
+ if (site = Site.find_by(url:url)) == nil
     site = Site.create
   end
   site.url = url
@@ -193,11 +211,9 @@ mArgv.each do |url|
   if !site || !site.url
     return
   end
-  unless mobile == false
-    url += '/' unless url.end_with? '/'
-    url += 'm-index.html'
-  end
+  urls += [url]
   pages = []
+  pageNames = []
   $images = []
   $httpErrors = []
   puts "Crawling #{site.url}"
@@ -212,10 +228,38 @@ mArgv.each do |url|
       end
       if page.html? && page.code.to_i == 200
         crawlPb.increment
+        puts "Crawling #{page.url.to_s}"
+        if mobile == true and not page.url.to_s.include? "m-"
+            next
+        end
+        pageNames << (HTMLEntities.new.decode(page.url).to_s)
         pages << URI.parse(HTMLEntities.new.decode(page.url).to_s)
         datas << page
       end
     end
+  end
+  puts urls
+  urls.each do |u|
+    u =HTMLEntities.new.decode(u)
+    if not pageNames.include?(u.to_s)
+     Anemone.crawl(u.to_s, :threads => 8, :verbose => false, :obey_robots_txt => true, :depth_limit => 0, :redirect_limit => 0) do |anemone|
+    anemone.on_every_page do |page|
+      if page.code.to_i == 404
+        $httpErrors << page.url.to_s
+      end
+      if page.html? && page.code.to_i == 200
+        crawlPb.increment
+        puts "Crawling #{page.url.to_s}"
+        if mobile == true and not page.url.to_s.include? "m-"
+            next
+        end
+        pageNames << (HTMLEntities.new.decode(page.url).to_s)
+        pages << URI.parse(HTMLEntities.new.decode(page.url).to_s)
+        datas << page
+      end
+    end
+  end
+end
   end
   crawlPb.refresh
   crawlPb.stop
@@ -243,9 +287,9 @@ mArgv.each do |url|
     pages.each do |p|
       begin
         i = $images.shift
-        if mobile == true
-          next unless p.path.to_s.include?('m-')
-        end
+#        if mobile == true
+ #         next unless p.path.to_s.include?('/m-')
+  #      end
         i.each {|l| l[:loc].gsub! '%20', ''}
         add p.path.to_s.force_encoding("utf-8"), :changefreq => 'daily', :priority => 0.5, :images => i
       rescue Exception => e
@@ -277,11 +321,11 @@ mArgv.each do |url|
 end
 puts "Done."
 if mobile == true
+  open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'r') {|f| @fData = f.read.gsub "</loc>", "</loc>\n<mobile:mobile />"}
   @fData = '<?xml version="1.0" encoding="UTF-8"?>
  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
   xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0">' + @fData[@fData.index('>', 45) + 1..-1]
-  open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + "-mobile.xml"), 'w') {|f| f.write @fData.gsub "\n", ''}
+  open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + ".xml"), 'w') {|f| f.write @fData.gsub "\n", ''}
 else
   open((Dir.pwd + "/public/" + SitemapGenerator::Sitemap.filename.to_s + "-image.xml"), 'r') {|f| @fData = f.read}
   @fData = '<?xml version="1.0" encoding="UTF-8"?>

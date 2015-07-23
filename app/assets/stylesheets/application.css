@@ -251,6 +251,16 @@ h1{
 	position: absolute;
 }
 
+#img_sitemap_mobile a{
+    background:url(phone.jpg) no-repeat;
+    position: absolute;
+    background-size: 100% 100%;
+    margin-top: 30px;
+    margin-left: -30px;
+    width:25px;
+    height:25px;
+}
+
 #img_sitemap_report a{
 	background-size: 100% 100%;
 	margin-left: 50%;
