@@ -34,6 +34,7 @@ EXTERNAL_FOLLOW      = 8          # Lien externe sans nofollow
 NO_HREF              = 9          # balise <a> sans href
 BAD_LINK             = 10         # Lien mal formé qui fait planter le parseur uri
 DEAD_LINK            = 11         # Ein 404
+TITLE_LENGTH_SHORT   = 12         # Title trop court
 
 # Connexion Database
 y = YAML.load_file('./config/database.yml')["development"]
@@ -73,6 +74,10 @@ end
 class Seoerror < ActiveRecord::Base
   belongs_to :page
   has_one    :site, through: :page
+end
+
+def wordCount(content)
+  content.scan(/\w+/).size
 end
 
 def runPage(page, site)
@@ -126,6 +131,7 @@ def runPage(page, site)
   doc.css('title').each do |t|
     p.titles.create(content:t.content, line: t.line, page_id:p.id)
     p.seoerrors.create(code:TITLE_LENGTH, line:t.line, desc: t.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site.id) unless t.content.size <= 55
+    p.seoerrors.create(code:TITLE_LENGTH_SHORT, line:t.line, desc: t.content.to_s.force_encoding("utf-8")[0..254], page_id:p.id, site_id:p.site.id) unless wordCount(t.content) > 3
   end
   hst = URI.parse(site.url).host
   doc.css('a').each do |a|

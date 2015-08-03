@@ -21,6 +21,7 @@ class ReportController < ApplicationController
 		@NO_HREF            = 9     	     # balise <a> sans href
 		@BAD_LINK           = 10         	 # Lien mal formé qui fait planter le parseur uri
 		@DEAD_LINK          = 11         	 # Ein 404
+		@TITLE_LENGTH_SHORT = 12           #Title trop long
 	end
 	def show
 		begin	

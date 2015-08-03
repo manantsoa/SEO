@@ -11,15 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140918123229) do
-
-  create_table "html_errors", force: true do |t|
-    t.string   "str"
-    t.integer  "line"
-    t.integer  "page_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(version: 20141201130048) do
 
   create_table "hxes", force: true do |t|
     t.integer  "x"
@@ -30,21 +22,43 @@ ActiveRecord::Schema.define(version: 20140918123229) do
     t.datetime "updated_at"
   end
 
-  create_table "imgs", force: true do |t|
+  create_table "pages", force: true do |t|
     t.string   "url"
-    t.string   "title"
-    t.string   "alt"
-    t.integer  "page_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "site_id"
+  end
+
+  create_table "positions", force: true do |t|
+    t.integer  "pos"
+    t.integer  "query_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "url"
+  end
+
+  create_table "queries", force: true do |t|
+    t.string   "query"
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "pages", force: true do |t|
-    t.string   "url"
-    t.text     "rawContent"
+  create_table "seoerrors", force: true do |t|
+    t.integer  "code"
+    t.integer  "line"
+    t.integer  "page_id"
+    t.integer  "site_id"
+    t.string   "desc"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "sitemaps", force: true do |t|
     t.integer  "site_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "str"
   end
 
   create_table "sites", force: true do |t|
@@ -52,6 +66,8 @@ ActiveRecord::Schema.define(version: 20140918123229) do
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "processing"
+    t.integer  "sitemap_image"
   end
 
   create_table "titles", force: true do |t|
@@ -59,6 +75,7 @@ ActiveRecord::Schema.define(version: 20140918123229) do
     t.integer  "page_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "line"
   end
 
 end

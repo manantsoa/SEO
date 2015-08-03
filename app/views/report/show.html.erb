@@ -28,7 +28,7 @@ Erreurs de taille sur le Title :
 <% if @site.seoerrors.where(code: [@TITLE_LENGTH]).count == 0 %>
 	Aucune erreur<br />
 <%else%>
-	<%= @site.seoerrors.where(code: [@TITLE_LENGTH]).count %> erreurs<br />
+	<%= @site.seoerrors.where(code: [@TITLE_LENGTH]).count + @site.seoerrors.where(code: [@TITLE_LENGTH_SHORT]).count %> erreurs<br />
 <% end %>
 </font>
 Erreurs HTML :
@@ -93,6 +93,13 @@ Erreurs 404 :
 					</font>
 				<%end %>
 			</div>
+            <div id="error_show_titlesize">
+            <% if p.seoerrors.where(code: @TITLE_LENGTH_SHORT).count > 0 %>
+                <font color="red">
+                  Title trop court : <%= p.seoerrors.where(code: @TITLE_LENGTH_SHORT).count %>
+                </font>
+            <%end %>
+            </div>
 			<div id="error_show_html">
 				<% if p.seoerrors.where(code: @PARSER).count > 0 %>
 					<font color="red">
