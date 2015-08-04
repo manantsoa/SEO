@@ -79,6 +79,14 @@
 		</font>
 		<span id="txt">Nombre d'erreurs html : </span>
 		<%= s.seoerrors.where(code: 4).count %><br/>
+		<span id="txt">Erreurs sur les title :</span>
+		<font color=<% if s.seoerrors.where(code: [7, 12]).count == 0 %> "green" <% else %> "red" <% end %>>
+			<% if s.seoerrors.where(code: [7, 12]).count == 0 %>
+				Aucune erreur<br />
+			<%else%>
+				<%= s.seoerrors.where(code: [7, 12]).count %> erreur(s)<br />
+			<% end %>
+		</font>
 	</div>
 <% end %>
 </ul>
